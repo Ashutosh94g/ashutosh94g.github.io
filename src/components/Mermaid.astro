@@ -11,15 +11,15 @@ const id = `mermaid-${Math.random().toString(36).slice(2, 10)}`;
 
 <figure class="my-8 not-prose">
   <div
-    class="mermaid-container border border-[var(--border)] rounded-lg bg-[var(--bg-elev)] p-4 sm:p-6 overflow-x-auto"
+    class="mermaid-container relative border border-[var(--border)] rounded-xl bg-[var(--bg-elev)] p-4 sm:p-6 overflow-x-auto shadow-[var(--shadow-card)]"
     data-mermaid-id={id}
   >
     <pre class="mermaid-source hidden">{code}</pre>
-    <div class="mermaid-render text-[var(--fg)]"></div>
+    <div class="mermaid-render text-[var(--fg)] flex justify-center items-center min-h-[120px]"></div>
   </div>
   {
     caption && (
-      <figcaption class="mt-2 text-sm text-[var(--fg-subtle)] text-center">
+      <figcaption class="mt-3 text-sm text-[var(--fg-subtle)] text-center max-w-3xl mx-auto leading-relaxed">
         {caption}
       </figcaption>
     )
@@ -27,10 +27,111 @@ const id = `mermaid-${Math.random().toString(36).slice(2, 10)}`;
 </figure>
 
 <script>
-  let initialized = false;
+  type MermaidTheme = {
+    theme: 'base';
+    themeVariables: Record<string, string>;
+    fontFamily: string;
+    fontSize: string;
+  };
 
-  function getMermaidTheme(): 'default' | 'dark' {
-    return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default';
+  function isDark() {
+    return document.documentElement.dataset.theme === 'dark';
+  }
+
+  function buildThemeConfig(): MermaidTheme {
+    const dark = isDark();
+    if (dark) {
+      return {
+        theme: 'base',
+        fontFamily:
+          'Inter Variable, Inter, ui-sans-serif, system-ui, sans-serif',
+        fontSize: '14px',
+        themeVariables: {
+          background: '#0f172a',
+          mainBkg: '#1e293b',
+          primaryColor: '#312e81',
+          primaryTextColor: '#e0e7ff',
+          primaryBorderColor: '#6366f1',
+          lineColor: '#94a3b8',
+          secondaryColor: '#1e293b',
+          secondaryTextColor: '#cbd5e1',
+          secondaryBorderColor: '#475569',
+          tertiaryColor: '#0f172a',
+          tertiaryTextColor: '#cbd5e1',
+          tertiaryBorderColor: '#334155',
+          textColor: '#e2e8f0',
+          fontFamily:
+            'Inter Variable, Inter, ui-sans-serif, system-ui, sans-serif',
+          fontSize: '14px',
+          // sequence
+          actorBkg: '#1e293b',
+          actorTextColor: '#e0e7ff',
+          actorBorder: '#6366f1',
+          actorLineColor: '#475569',
+          signalColor: '#cbd5e1',
+          signalTextColor: '#cbd5e1',
+          labelBoxBkgColor: '#312e81',
+          labelBoxBorderColor: '#6366f1',
+          labelTextColor: '#e0e7ff',
+          loopTextColor: '#cbd5e1',
+          noteBkgColor: '#1e1b4b',
+          noteTextColor: '#c7d2fe',
+          noteBorderColor: '#6366f1',
+          activationBkgColor: '#312e81',
+          activationBorderColor: '#6366f1',
+          // flowchart
+          clusterBkg: '#0b1024',
+          clusterBorder: '#334155',
+          edgeLabelBackground: '#1e293b',
+          nodeTextColor: '#e0e7ff',
+        },
+      };
+    }
+    return {
+      theme: 'base',
+      fontFamily:
+        'Inter Variable, Inter, ui-sans-serif, system-ui, sans-serif',
+      fontSize: '14px',
+      themeVariables: {
+        background: '#ffffff',
+        mainBkg: '#eef2ff',
+        primaryColor: '#eef2ff',
+        primaryTextColor: '#1e1b4b',
+        primaryBorderColor: '#6366f1',
+        lineColor: '#475569',
+        secondaryColor: '#f1f5f9',
+        secondaryTextColor: '#1e293b',
+        secondaryBorderColor: '#94a3b8',
+        tertiaryColor: '#ffffff',
+        tertiaryTextColor: '#334155',
+        tertiaryBorderColor: '#cbd5e1',
+        textColor: '#0f172a',
+        fontFamily:
+          'Inter Variable, Inter, ui-sans-serif, system-ui, sans-serif',
+        fontSize: '14px',
+        // sequence
+        actorBkg: '#eef2ff',
+        actorTextColor: '#1e1b4b',
+        actorBorder: '#6366f1',
+        actorLineColor: '#94a3b8',
+        signalColor: '#475569',
+        signalTextColor: '#1e293b',
+        labelBoxBkgColor: '#e0e7ff',
+        labelBoxBorderColor: '#6366f1',
+        labelTextColor: '#312e81',
+        loopTextColor: '#475569',
+        noteBkgColor: '#fef3c7',
+        noteTextColor: '#78350f',
+        noteBorderColor: '#f59e0b',
+        activationBkgColor: '#e0e7ff',
+        activationBorderColor: '#6366f1',
+        // flowchart
+        clusterBkg: '#f8fafc',
+        clusterBorder: '#cbd5e1',
+        edgeLabelBackground: '#ffffff',
+        nodeTextColor: '#1e293b',
+      },
+    };
   }
 
   async function renderAll() {
@@ -39,20 +140,21 @@ const id = `mermaid-${Math.random().toString(36).slice(2, 10)}`;
 
     const { default: mermaid } = await import('mermaid');
 
+    const cfg = buildThemeConfig();
     mermaid.initialize({
       startOnLoad: false,
-      theme: getMermaidTheme(),
-      themeVariables: {
-        fontFamily: 'Inter Variable, Inter, ui-sans-serif, system-ui, sans-serif',
-        fontSize: '14px',
-      },
-      flowchart: { curve: 'basis', padding: 12 },
+      theme: cfg.theme,
+      themeVariables: cfg.themeVariables,
+      fontFamily: cfg.fontFamily,
+      flowchart: { curve: 'basis', padding: 14, useMaxWidth: true },
+      sequence: { useMaxWidth: true, mirrorActors: false, actorMargin: 60 },
       securityLevel: 'strict',
     });
     initialized = true;
 
     for (const container of Array.from(containers)) {
-      const id = container.dataset.mermaidId ?? `m-${Math.random().toString(36).slice(2)}`;
+      const id =
+        container.dataset.mermaidId ?? `m-${Math.random().toString(36).slice(2)}`;
       const sourceEl = container.querySelector<HTMLElement>('.mermaid-source');
       const renderEl = container.querySelector<HTMLElement>('.mermaid-render');
       if (!sourceEl || !renderEl) continue;
@@ -69,11 +171,7 @@ const id = `mermaid-${Math.random().toString(36).slice(2, 10)}`;
   }
 
   function rerender() {
-    if (initialized) {
-      renderAll();
-    } else {
-      renderAll();
-    }
+    renderAll();
   }
 
   rerender();

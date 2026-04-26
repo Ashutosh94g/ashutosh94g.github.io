@@ -1,4 +1,11 @@
 ---
+import CaseStudySigil from './CaseStudySigil.astro';
+
+interface Metric {
+  value: string;
+  label: string;
+}
+
 interface Props {
   href: string;
   title: string;
@@ -8,6 +15,10 @@ interface Props {
   tags: string[];
   accent?: 'indigo' | 'amber' | 'emerald';
   index?: number;
+  sigil?: 'tuxedo' | 'atlas' | 'compiler';
+  metrics?: Metric[];
+  span?: 'default' | 'wide';
+  heroEyebrow?: string;
 }
 
 const {
@@ -19,47 +30,113 @@ const {
   tags,
   accent = 'indigo',
   index,
+  sigil,
+  metrics = [],
+  span = 'default',
+  heroEyebrow,
 } = Astro.props;
 
-const accentRule = {
-  indigo: 'before:bg-indigo-500',
-  amber: 'before:bg-amber-500',
-  emerald: 'before:bg-emerald-500',
+const accentClass = `accent-${accent}`;
+const accentText = {
+  indigo: 'text-indigo-600 dark:text-indigo-400',
+  amber: 'text-amber-600 dark:text-amber-400',
+  emerald: 'text-emerald-600 dark:text-emerald-400',
 }[accent];
+
+const colSpan = span === 'wide' ? 'lg:col-span-2' : 'lg:col-span-1';
 ---
 
 <a
   href={href}
-  class={`group relative block rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] no-underline overflow-hidden transition-all duration-200 hover:border-[var(--border-strong)] hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.18)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent-500)] before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-[3px] ${accentRule}`}
+  class={`group relative block rounded-xl border border-[var(--border)] bg-[var(--bg-elev)] no-underline overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:shadow-[var(--shadow-card-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent-500)] shadow-[var(--shadow-card)] ${accentClass} ${colSpan}`}
 >
-  <div class="p-6 sm:p-7 pl-7 sm:pl-9">
+  {/* Accent stripe */}
+  <span
+    class="absolute left-0 top-0 h-full w-[3px] accent-stripe transition-all duration-300 group-hover:w-1"
+    aria-hidden="true"
+  ></span>
+
+  {/* Glow on hover */}
+  <span
+    class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+    style={`background: radial-gradient(80% 60% at 0% 0%, color-mix(in srgb, var(--accent-from) 12%, transparent), transparent 60%);`}
+    aria-hidden="true"
+  ></span>
+
+  {/* Sigil */}
+  {
+    sigil && (
+      <div
+        class={`relative ${span === 'wide' ? 'h-40 sm:h-48' : 'h-28 sm:h-32'} overflow-hidden border-b border-[var(--border)] bg-[var(--bg-deep)]`}
+      >
+        <div class="absolute inset-0 dot-grid opacity-50" aria-hidden="true"></div>
+        <CaseStudySigil
+          variant={sigil}
+          class={`absolute inset-0 w-full h-full p-4 sm:p-6 ${accentText} transition-transform duration-500 group-hover:scale-[1.04]`}
+        />
+        {heroEyebrow && (
+          <div class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[var(--bg-elev)]/80 border border-[var(--border)] backdrop-blur text-[10px] uppercase tracking-wider font-medium text-[var(--fg-muted)]">
+            {heroEyebrow}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  <div class={`relative p-5 sm:p-6 ${span === 'wide' ? 'sm:p-8' : ''} pl-6 sm:pl-7`}>
     <div
       class="flex items-baseline justify-between gap-4 text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-3"
     >
       <span>
-        {index !== undefined ? `Case study ${String(index).padStart(2, '0')}` : 'Case study'}
-        &middot; {role}
+        {index !== undefined ? `Case ${String(index).padStart(2, '0')}` : 'Case study'}
+        <span class={`ml-2 ${accentText}`}>&middot; {role}</span>
       </span>
       <span class="hidden sm:inline">{dates}</span>
     </div>
+
     <h3
-      class="font-serif text-2xl sm:text-3xl font-semibold tracking-tight leading-tight text-[var(--fg)] mb-3 group-hover:text-[var(--link)] transition-colors"
+      class={`font-serif font-semibold tracking-tight leading-tight text-[var(--fg)] mb-3 group-hover:text-[var(--link)] transition-colors ${span === 'wide' ? 'text-2xl sm:text-3xl lg:text-[2rem]' : 'text-xl sm:text-2xl'}`}
     >
       {title}
     </h3>
-    <p class="text-[var(--fg-muted)] leading-relaxed mb-5">
+
+    <p
+      class={`text-[var(--fg-muted)] leading-relaxed mb-5 ${span === 'wide' ? 'text-base sm:text-lg' : 'text-[0.95rem]'}`}
+    >
       {summary}
     </p>
+
+    {
+      metrics.length > 0 && (
+        <dl
+          class={`grid ${span === 'wide' ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-2'} gap-x-4 gap-y-3 mb-5 not-prose`}
+        >
+          {metrics.slice(0, span === 'wide' ? 4 : 2).map((m) => (
+            <div class="border-l border-[var(--border)] pl-3">
+              <dt class="text-[10px] uppercase tracking-wider font-medium text-[var(--fg-subtle)]">
+                {m.label}
+              </dt>
+              <dd
+                class={`font-serif font-semibold tracking-tight text-[var(--fg)] m-0 ${span === 'wide' ? 'text-lg sm:text-xl' : 'text-base'}`}
+              >
+                {m.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+
     <div class="flex flex-wrap items-center gap-2">
       {
         tags.slice(0, 4).map((tag) => (
-          <span class="inline-flex text-xs px-2 py-1 rounded border border-[var(--border)] text-[var(--fg-subtle)] bg-[var(--bg)]">
+          <span class="inline-flex text-xs px-2 py-0.5 rounded-full border border-[var(--border)] text-[var(--fg-subtle)] bg-[var(--bg)]">
             {tag}
           </span>
         ))
       }
       <span
-        class="ml-auto text-sm text-[var(--fg-muted)] group-hover:text-[var(--link)] transition-colors"
+        class={`ml-auto text-sm font-medium transition-all duration-200 ${accentText} group-hover:translate-x-0.5`}
         aria-hidden="true"
       >
         Read &rarr;

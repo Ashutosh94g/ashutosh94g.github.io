@@ -1,0 +1,46 @@
+---
+interface TimelineItem {
+  date: string;
+  title: string;
+  description?: string;
+  meta?: string;
+}
+
+interface Props {
+  items: TimelineItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<ol class="relative list-none m-0 p-0 pl-6 sm:pl-8 border-l-2 border-[var(--border)]">
+  {
+    items.map((item) => (
+      <li class="relative pb-8 last:pb-0">
+        <span
+          class="absolute -left-[33px] sm:-left-[37px] top-1.5 inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-[var(--color-accent-500)] ring-4 ring-[var(--bg)]"
+          aria-hidden="true"
+        />
+        <div class="text-xs uppercase tracking-wider font-medium text-[var(--fg-subtle)] mb-1">
+          {item.date}
+          {item.meta && (
+            <>
+              <span class="mx-2 text-[var(--border-strong)]">&middot;</span>
+              <span class="text-[var(--fg-muted)] normal-case tracking-normal font-normal">
+                {item.meta}
+              </span>
+            </>
+          )}
+        </div>
+        <h3 class="font-serif text-lg font-semibold tracking-tight text-[var(--fg)] m-0 leading-tight">
+          {item.title}
+        </h3>
+        {item.description && (
+          <p class="text-sm text-[var(--fg-muted)] leading-relaxed mt-2 m-0">
+            {item.description}
+          </p>
+        )}
+      </li>
+    ))
+  }
+</ol>

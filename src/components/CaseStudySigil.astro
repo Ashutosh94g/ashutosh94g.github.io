@@ -1,0 +1,166 @@
+---
+interface Props {
+  variant: 'tuxedo' | 'atlas' | 'compiler';
+  class?: string;
+}
+
+const { variant, class: className = '' } = Astro.props;
+---
+
+<svg
+  class={className}
+  viewBox="0 0 320 160"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  {variant === 'tuxedo' && (
+    <>
+      <defs>
+        <linearGradient id="sigil-tuxedo-from" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="currentColor" stop-opacity="0.95" />
+          <stop offset="1" stop-color="currentColor" stop-opacity="0.45" />
+        </linearGradient>
+      </defs>
+      <g stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.8">
+        <line x1="0" y1="40" x2="320" y2="40" stroke-dasharray="2 6" opacity="0.25" />
+        <line x1="0" y1="80" x2="320" y2="80" stroke-dasharray="2 6" opacity="0.25" />
+        <line x1="0" y1="120" x2="320" y2="120" stroke-dasharray="2 6" opacity="0.25" />
+      </g>
+
+      <g>
+        <rect x="20" y="60" width="68" height="40" rx="6" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.5" />
+        <text x="54" y="84" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="currentColor">Legacy</text>
+
+        <path d="M88 80 L130 80" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.7" stroke-dasharray="4 3" />
+        <polygon points="130,80 124,76 124,84" fill="currentColor" fill-opacity="0.7" />
+
+        <rect x="130" y="56" width="64" height="48" rx="6" fill="url(#sigil-tuxedo-from)" stroke="currentColor" />
+        <text x="162" y="78" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="10" font-weight="600" fill="white">SHIM</text>
+        <text x="162" y="92" text-anchor="middle" font-family="ui-monospace, monospace" font-size="9" fill="white" fill-opacity="0.8">.proto</text>
+
+        <path d="M194 80 L232 80" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.7" />
+        <polygon points="232,80 226,76 226,84" fill="currentColor" fill-opacity="0.9" />
+
+        <rect x="232" y="60" width="68" height="40" rx="6" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.5" />
+        <text x="266" y="84" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="currentColor">gRPC</text>
+      </g>
+      <g opacity="0.55">
+        <circle cx="54" cy="60" r="2" fill="currentColor" />
+        <circle cx="266" cy="60" r="2" fill="currentColor" />
+        <circle cx="160" cy="40" r="2" fill="currentColor" />
+        <circle cx="160" cy="120" r="2" fill="currentColor" />
+        <line x1="54" y1="60" x2="160" y2="40" stroke="currentColor" stroke-opacity="0.25" />
+        <line x1="266" y1="60" x2="160" y2="40" stroke="currentColor" stroke-opacity="0.25" />
+        <line x1="54" y1="100" x2="160" y2="120" stroke="currentColor" stroke-opacity="0.25" />
+        <line x1="266" y1="100" x2="160" y2="120" stroke="currentColor" stroke-opacity="0.25" />
+      </g>
+    </>
+  )}
+
+  {variant === 'atlas' && (
+    <>
+      <defs>
+        <radialGradient id="sigil-atlas-glow" cx="0.5" cy="0.5" r="0.7">
+          <stop offset="0" stop-color="currentColor" stop-opacity="0.35" />
+          <stop offset="1" stop-color="currentColor" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <rect width="320" height="160" fill="url(#sigil-atlas-glow)" opacity="0.4" />
+
+      {/* L1-L7 layered rings */}
+      <g stroke="currentColor" fill="none" opacity="0.65">
+        <ellipse cx="160" cy="80" rx="140" ry="62" stroke-opacity="0.18" />
+        <ellipse cx="160" cy="80" rx="116" ry="52" stroke-opacity="0.25" />
+        <ellipse cx="160" cy="80" rx="92" ry="42" stroke-opacity="0.32" />
+        <ellipse cx="160" cy="80" rx="68" ry="32" stroke-opacity="0.42" />
+        <ellipse cx="160" cy="80" rx="44" ry="22" stroke-opacity="0.55" />
+        <ellipse cx="160" cy="80" rx="22" ry="12" stroke-opacity="0.7" />
+      </g>
+
+      {/* Atom nodes */}
+      <g fill="currentColor">
+        <circle cx="160" cy="80" r="5" />
+        <circle cx="84" cy="58" r="3" opacity="0.85" />
+        <circle cx="240" cy="58" r="3" opacity="0.85" />
+        <circle cx="76" cy="110" r="3" opacity="0.7" />
+        <circle cx="248" cy="108" r="3" opacity="0.7" />
+        <circle cx="40" cy="80" r="2.5" opacity="0.6" />
+        <circle cx="280" cy="80" r="2.5" opacity="0.6" />
+        <circle cx="160" cy="34" r="2.5" opacity="0.6" />
+        <circle cx="160" cy="128" r="2.5" opacity="0.6" />
+      </g>
+
+      {/* Connections */}
+      <g stroke="currentColor" stroke-width="0.8" opacity="0.4">
+        <line x1="160" y1="80" x2="84" y2="58" />
+        <line x1="160" y1="80" x2="240" y2="58" />
+        <line x1="160" y1="80" x2="76" y2="110" />
+        <line x1="160" y1="80" x2="248" y2="108" />
+        <line x1="160" y1="80" x2="160" y2="34" />
+        <line x1="160" y1="80" x2="160" y2="128" />
+        <line x1="160" y1="80" x2="40" y2="80" stroke-dasharray="2 3" />
+        <line x1="160" y1="80" x2="280" y2="80" stroke-dasharray="2 3" />
+      </g>
+
+      {/* Layer ticks */}
+      <g font-family="ui-monospace, monospace" font-size="8" fill="currentColor" opacity="0.6">
+        <text x="158" y="148">L1 — L7</text>
+      </g>
+    </>
+  )}
+
+  {variant === 'compiler' && (
+    <>
+      {/* Lex stream → AST → emit */}
+      <g font-family="ui-monospace, monospace" font-size="9" fill="currentColor" opacity="0.7">
+        <text x="20" y="32">.l / .y</text>
+      </g>
+      {/* token stream */}
+      <g opacity="0.85">
+        <rect x="20" y="44" width="20" height="12" rx="2" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-opacity="0.55" />
+        <rect x="44" y="44" width="32" height="12" rx="2" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-opacity="0.55" />
+        <rect x="80" y="44" width="14" height="12" rx="2" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-opacity="0.55" />
+        <rect x="98" y="44" width="24" height="12" rx="2" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-opacity="0.55" />
+        <rect x="126" y="44" width="14" height="12" rx="2" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-opacity="0.55" />
+      </g>
+
+      {/* parse tree */}
+      <g stroke="currentColor" fill="currentColor">
+        <circle cx="200" cy="50" r="4" />
+        <circle cx="180" cy="78" r="4" opacity="0.85" />
+        <circle cx="220" cy="78" r="4" opacity="0.85" />
+        <circle cx="168" cy="106" r="3.5" opacity="0.7" />
+        <circle cx="192" cy="106" r="3.5" opacity="0.7" />
+        <circle cx="208" cy="106" r="3.5" opacity="0.7" />
+        <circle cx="232" cy="106" r="3.5" opacity="0.7" />
+
+        <line x1="200" y1="50" x2="180" y2="78" stroke-width="1" />
+        <line x1="200" y1="50" x2="220" y2="78" stroke-width="1" />
+        <line x1="180" y1="78" x2="168" y2="106" stroke-width="1" />
+        <line x1="180" y1="78" x2="192" y2="106" stroke-width="1" />
+        <line x1="220" y1="78" x2="208" y2="106" stroke-width="1" />
+        <line x1="220" y1="78" x2="232" y2="106" stroke-width="1" />
+      </g>
+
+      {/* arrow to emit */}
+      <path d="M252 78 L284 78" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.7" />
+      <polygon points="284,78 278,74 278,82" fill="currentColor" fill-opacity="0.9" />
+
+      {/* emit braces */}
+      <g font-family="ui-monospace, monospace" font-size="20" fill="currentColor" opacity="0.85">
+        <text x="290" y="86">{`{ }`}</text>
+      </g>
+
+      {/* baseline ruler */}
+      <g stroke="currentColor" stroke-width="0.6" opacity="0.18">
+        <line x1="0" y1="138" x2="320" y2="138" />
+        <line x1="20" y1="134" x2="20" y2="142" />
+        <line x1="80" y1="134" x2="80" y2="142" />
+        <line x1="160" y1="134" x2="160" y2="142" />
+        <line x1="240" y1="134" x2="240" y2="142" />
+        <line x1="300" y1="134" x2="300" y2="142" />
+      </g>
+    </>
+  )}
+</svg>

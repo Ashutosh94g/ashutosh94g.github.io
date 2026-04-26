@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 }
 
 const { study } = Astro.props;
-const { Content } = await render(study);
+const { Content, headings } = await render(study);
 ---
 
 <CaseStudyLayout
@@ -21,7 +21,10 @@ const { Content } = await render(study);
   dates={study.data.dates}
   tags={study.data.tags}
   accent={study.data.accent}
-  diagram={study.data.diagram}
+  metrics={study.data.metrics}
+  heroEyebrow={study.data.heroEyebrow}
+  headings={headings}
+  ogImage={`/og/${study.id}.png`}
 >
   <Content />
 </CaseStudyLayout>

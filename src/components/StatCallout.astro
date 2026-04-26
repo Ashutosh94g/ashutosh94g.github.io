@@ -1,0 +1,45 @@
+---
+interface Props {
+  from?: string;
+  to: string;
+  label: string;
+  note?: string;
+  accent?: 'indigo' | 'amber' | 'emerald';
+}
+
+const { from, to, label, note, accent = 'indigo' } = Astro.props;
+
+const accentClass = {
+  indigo: 'border-indigo-500/30 text-indigo-700 dark:text-indigo-300',
+  amber: 'border-amber-500/30 text-amber-700 dark:text-amber-300',
+  emerald: 'border-emerald-500/30 text-emerald-700 dark:text-emerald-300',
+}[accent];
+---
+
+<aside
+  class={`my-8 not-prose rounded-xl border ${accentClass} bg-[var(--bg-elev)] p-5 sm:p-6 shadow-[var(--shadow-card)]`}
+>
+  <div class="flex items-baseline flex-wrap gap-x-3 gap-y-2 font-mono">
+    {
+      from && (
+        <span class="text-base sm:text-lg text-[var(--fg-subtle)] line-through decoration-1">
+          {from}
+        </span>
+      )
+    }
+    {from && <span class="text-[var(--fg-subtle)]" aria-hidden="true">&rarr;</span>}
+    <span class="font-serif font-semibold text-2xl sm:text-3xl tracking-tight">
+      {to}
+    </span>
+  </div>
+  <div class="mt-2 text-xs uppercase tracking-wider font-medium text-[var(--fg-subtle)]">
+    {label}
+  </div>
+  {
+    note && (
+      <p class="mt-2 text-sm text-[var(--fg-muted)] leading-relaxed m-0">
+        {note}
+      </p>
+    )
+  }
+</aside>

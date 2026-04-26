@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import CaseStudyCard from '../components/CaseStudyCard.astro';
+import BentoGrid from '../components/BentoGrid.astro';
+import StatGrid from '../components/StatGrid.astro';
 import JsonLd from '../components/JsonLd.astro';
 
 const studies = (await getCollection('caseStudies')).sort(
@@ -72,6 +74,33 @@ const websiteSchema = {
   url: SITE_URL,
   author: { '@id': `${SITE_URL}#person` },
 };
+
+const headlineStats = [
+  {
+    value: '18',
+    suffix: 'M+',
+    label: 'Lines analyzed',
+    caption: 'C / Pro*C / shell, mapped via Atlas',
+  },
+  {
+    value: '500',
+    suffix: '+',
+    label: 'Scripts auto-converted',
+    caption: '48 hrs of hand-conversion to ~40 mins each',
+  },
+  {
+    value: '1,200',
+    suffix: '+',
+    label: 'Reasoning atoms',
+    caption: 'Across 8 core processes, 99.6% truth-grounded',
+  },
+  {
+    value: '80',
+    suffix: '%',
+    label: 'Defects caught at build',
+    caption: 'Compile-time gate over a 15-year-old C codebase',
+  },
+];
 ---
 
 <BaseLayout>
@@ -83,65 +112,166 @@ const websiteSchema = {
 
   <section
     id="case-studies"
-    class="max-w-3xl mx-auto px-5 sm:px-8 pb-12 scroll-mt-20"
+    class="relative max-w-5xl mx-auto px-5 sm:px-8 pt-16 pb-12 scroll-mt-20"
     aria-labelledby="case-studies-heading"
   >
-    <header class="mb-8">
+    <header class="max-w-3xl mb-10">
+      <p
+        class="text-xs uppercase tracking-[0.2em] font-medium text-[var(--color-accent-600)] dark:text-[var(--color-accent-400)] mb-3"
+      >
+        Selected work
+      </p>
       <h2
         id="case-studies-heading"
-        class="font-serif text-2xl sm:text-3xl font-semibold tracking-tight mb-3"
+        class="font-serif text-3xl sm:text-4xl font-semibold tracking-tight mb-3"
       >
-        Case studies
+        Three pieces of work that don't fit on a one-page resume.
       </h2>
-      <p class="text-[var(--fg-muted)] leading-relaxed max-w-2xl">
-        Three pieces of work that don't fit on a one-page resume. Each one digs into the
-        problem, the mechanism, and what shipped &mdash; with the architecture diagrams
-        and the lessons.
+      <p class="text-lg text-[var(--fg-muted)] leading-relaxed max-w-2xl">
+        Each one digs into the problem, the mechanism, and what shipped &mdash;
+        with the architecture diagrams, the measured numbers, and what stayed
+        with me afterwards.
       </p>
     </header>
 
-    <div class="grid gap-5">
+    <BentoGrid>
       {
         studies.map((study, i) => (
           <CaseStudyCard
             href={`/case-studies/${study.id}/`}
-            title={study.data.title}
-            summary={study.data.summary}
+            title={study.data.cardTitle ?? study.data.title}
+            summary={study.data.cardSummary ?? study.data.summary}
             role={study.data.role}
             dates={study.data.dates}
             tags={study.data.tags}
             accent={study.data.accent}
             index={i + 1}
+            sigil={study.data.sigil}
+            metrics={study.data.metrics}
+            heroEyebrow={study.data.heroEyebrow}
+            span={study.data.span === 'wide' ? 'wide' : 'default'}
           />
         ))
       }
+    </BentoGrid>
+  </section>
+
+  <section
+    id="numbers"
+    class="relative max-w-5xl mx-auto px-5 sm:px-8 py-16 border-t border-[var(--border)] mt-8"
+    aria-labelledby="numbers-heading"
+  >
+    <header class="max-w-3xl mb-10">
+      <p
+        class="text-xs uppercase tracking-[0.2em] font-medium text-[var(--color-accent-600)] dark:text-[var(--color-accent-400)] mb-3"
+      >
+        Selected numbers
+      </p>
+      <h2
+        id="numbers-heading"
+        class="font-serif text-3xl sm:text-4xl font-semibold tracking-tight mb-3"
+      >
+        Aggregate impact, with the receipts.
+      </h2>
+      <p class="text-lg text-[var(--fg-muted)] leading-relaxed max-w-2xl">
+        Numbers from the case studies, side-by-side. Architecture and aggregate
+        metrics are on the record; specific client names, internal service names,
+        and dollar values stay out. The case studies link the receipts.
+      </p>
+    </header>
+
+    <div
+      class="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-6 sm:p-8 shadow-[var(--shadow-card)] relative overflow-hidden"
+    >
+      <div
+        class="absolute inset-0 dot-grid opacity-60 pointer-events-none"
+        aria-hidden="true"
+      >
+      </div>
+      <div class="relative">
+        <StatGrid stats={headlineStats} cols={4} />
+      </div>
     </div>
   </section>
 
   <section
+    id="now-teaser"
+    class="relative max-w-5xl mx-auto px-5 sm:px-8 py-12"
+    aria-labelledby="now-teaser-heading"
+  >
+    <a
+      href="/now/"
+      class="group block rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] no-underline overflow-hidden p-6 sm:p-8 hover:border-[var(--border-strong)] transition-colors shadow-[var(--shadow-card)]"
+    >
+      <div class="flex items-start justify-between gap-6 flex-wrap">
+        <div class="max-w-2xl">
+          <p
+            class="text-xs uppercase tracking-[0.2em] font-medium text-[var(--color-accent-600)] dark:text-[var(--color-accent-400)] mb-3"
+          >
+            What I'm doing now
+          </p>
+          <h2
+            id="now-teaser-heading"
+            class="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-[var(--fg)] mb-3 group-hover:text-[var(--link)] transition-colors"
+          >
+            Rolling out gRPC across two carriers, expanding Atlas's CR pipeline,
+            and writing more.
+          </h2>
+          <p class="text-[var(--fg-muted)] leading-relaxed m-0">
+            A short snapshot of current focus, refreshed when it shifts.
+            Borrowed from the
+            <a
+              href="https://nownownow.com/about"
+              target="_blank"
+              rel="noopener"
+              class="text-[var(--link)]">/now</a
+            >
+            convention.
+          </p>
+        </div>
+        <span
+          class="text-[var(--color-accent-600)] dark:text-[var(--color-accent-400)] font-medium group-hover:translate-x-1 transition-transform"
+          aria-hidden="true"
+        >
+          Read /now &rarr;
+        </span>
+      </div>
+    </a>
+  </section>
+
+  <section
     id="elsewhere"
-    class="max-w-3xl mx-auto px-5 sm:px-8 py-16 border-t border-[var(--border)] mt-12"
+    class="max-w-5xl mx-auto px-5 sm:px-8 py-16 border-t border-[var(--border)] mt-4"
     aria-labelledby="elsewhere-heading"
   >
-    <h2
-      id="elsewhere-heading"
-      class="font-serif text-2xl sm:text-3xl font-semibold tracking-tight mb-5"
-    >
-      Elsewhere
-    </h2>
-    <p class="text-[var(--fg-muted)] leading-relaxed mb-6 max-w-2xl">
-      Best places to reach me, and the latest version of my resume.
-    </p>
+    <header class="max-w-3xl mb-8">
+      <p
+        class="text-xs uppercase tracking-[0.2em] font-medium text-[var(--color-accent-600)] dark:text-[var(--color-accent-400)] mb-3"
+      >
+        Elsewhere
+      </p>
+      <h2
+        id="elsewhere-heading"
+        class="font-serif text-3xl sm:text-4xl font-semibold tracking-tight mb-3"
+      >
+        Best places to find me.
+      </h2>
+      <p class="text-[var(--fg-muted)] leading-relaxed max-w-2xl">
+        Code on GitHub, work history on LinkedIn, longer-form thinking in the
+        case studies. Resume PDF stays in sync with this site.
+      </p>
+    </header>
     <ul class="grid gap-3 sm:grid-cols-2 list-none m-0 p-0">
       <li>
         <a
           href="https://github.com/ashutosh94g"
           target="_blank"
           rel="noopener"
-          class="flex items-center justify-between p-4 rounded border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+          class="flex items-center justify-between p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
         >
           <span>
-            <span class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
+            <span
+              class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
               >GitHub</span
             >
             <span class="text-base">github.com/ashutosh94g</span>
@@ -154,10 +284,11 @@ const websiteSchema = {
           href="https://www.linkedin.com/in/ashutosh94g/"
           target="_blank"
           rel="noopener"
-          class="flex items-center justify-between p-4 rounded border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+          class="flex items-center justify-between p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
         >
           <span>
-            <span class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
+            <span
+              class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
               >LinkedIn</span
             >
             <span class="text-base">in/ashutosh94g</span>
@@ -168,10 +299,11 @@ const websiteSchema = {
       <li>
         <a
           href="mailto:ashutosh94g@gmail.com"
-          class="flex items-center justify-between p-4 rounded border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+          class="flex items-center justify-between p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
         >
           <span>
-            <span class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
+            <span
+              class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
               >Email</span
             >
             <span class="text-base">ashutosh94g@gmail.com</span>
@@ -182,10 +314,11 @@ const websiteSchema = {
       <li>
         <a
           href="/resume.pdf"
-          class="flex items-center justify-between p-4 rounded border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+          class="flex items-center justify-between p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
         >
           <span>
-            <span class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
+            <span
+              class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
               >Resume</span
             >
             <span class="text-base">resume.pdf</span>

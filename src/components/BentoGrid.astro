@@ -1,0 +1,14 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div
+  class={`grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 ${className}`}
+  data-bento
+>
+  <slot />
+</div>

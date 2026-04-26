@@ -1,193 +1,492 @@
 ---
 title: "Tuxedo to gRPC: a migration framework for Tier-1 telecom"
-summary: "Designed a generic protocol shim that translates Oracle Tuxedo's flattened buffers into strongly-typed Protobuf with zero changes to business code. Validated as a POC on one production service; now being rolled out across CK Hutchison's Three UK and Three Ireland."
+cardTitle: "Tuxedo \u2192 gRPC: a migration framework for Tier-1 telecom"
+summary: "A Lex/Yacc transpiler, a protocol shim, and an in-house orchestrator that take Tier-1 telecom backends off Oracle Tuxedo with zero changes to business code. Validated on a production service; rolling out across CK Hutchison's Three UK and Three Ireland."
+cardSummary: "Lex/Yacc transpiler + protocol shim + in-house orchestrator that lift Tier-1 telecom backends off Oracle Tuxedo with zero changes to business code. Now deploying across two CK Hutchison carriers."
 role: "Designer & primary engineer"
-dates: "Jun 2025 — Nov 2025"
-tags: ["gRPC", "Protobuf", "HAProxy", "Consul", "Nomad", "Kafka"]
-order: 1
+dates: "Jun 2025 — Present"
+tags: ["gRPC", "Protobuf", "Lex/Yacc", "HAProxy", "Consul", "Nomad"]
+order: 2
 featured: true
 accent: "indigo"
-diagram: "mermaid-tuxedo"
+diagram: "none"
+sigil: "tuxedo"
+heroEyebrow: "Two carriers in production rollout"
+span: "default"
+metrics:
+  - value: "Zero"
+    label: "Business-code changes"
+  - value: "2 carriers"
+    label: "Three UK + Three IE"
+  - value: "5 components"
+    label: "Each independently swappable"
+  - value: "Months"
+    label: "Not years"
 ---
+
+import Mermaid from '../../components/Mermaid.astro';
+import StatCallout from '../../components/StatCallout.astro';
+import PullQuote from '../../components/PullQuote.astro';
+import { tuxedoArchitectureMermaid } from '../../diagrams/tuxedo-architecture';
+import { tuxedoTpcallSequenceMermaid } from '../../diagrams/tuxedo-tpcall-sequence';
 
 ## The problem
 
 A Tier-1 European telecom carrier was running its core backend on Oracle Tuxedo —
 a battle-tested transaction monitor that has carried billing, provisioning, and
 account-management workloads for some operators for over two decades. Tuxedo is
-genuinely good at the job it was designed for, but the cost surface had drifted out
-from under it.
+genuinely good at the job it was designed for, but the cost surface had drifted
+out from under it.
 
 Three problems compound:
 
 - **C-only ecosystem lock-in.** Services written for Tuxedo are typically C, and
-  service-to-service communication uses Tuxedo's flattened-buffer types — fixed-width,
-  position-encoded blobs that are basically untyped on the wire. Wanting to write a
-  new service in Go or Rust, or wire one into Kafka, means writing a translation
-  layer for every interaction.
+  service-to-service communication uses Tuxedo's flattened-buffer types —
+  fixed-width, position-encoded blobs that are basically untyped on the wire.
+  Wanting to write a new service in Go or Rust, or wire one into Kafka, means
+  writing a translation layer for every interaction.
 - **A licensing footprint that scales with cores.** Industry analysts publish
   Oracle Tuxedo at roughly **$60,000 per Oracle processor** list price plus the
   standard 22% annual support fee, with per-processor add-ons for management
-  (TSAM ~$14K), web access (SALT ~$12K), and Java integration (Jolt ~$9K). See the
-  [Oracle Technology Global Price List](https://www.oracle.com/corporate/pricing/technology-price-list.pdf)
+  (TSAM ~$14K), web access (SALT ~$12K), and Java integration (Jolt ~$9K). See
+  the [Oracle Technology Global Price List](https://www.oracle.com/corporate/pricing/technology-price-list.pdf)
   and [Redress Compliance's Tuxedo licensing guide](https://redresscompliance.com/oracle-tuxedo-licensing-the-ultimate-guide/).
   At Tier-1 carrier scale this is comfortably a multi-million-dollar annual
   dependency before you write a single line of code.
-- **No clean path to anything modern.** Streaming events into Kafka, exposing services
-  to a service mesh, deploying alongside Kubernetes-shaped workloads — every one of
-  these wants to talk to a typed RPC, not a flattened-buffer transaction.
+- **No clean path to anything modern.** Streaming events into Kafka, exposing
+  services to a service mesh, deploying alongside Kubernetes-shaped workloads —
+  every one of these wants to talk to a typed RPC, not a flattened-buffer
+  transaction.
 
-The question wasn't really "how do we use less Tuxedo." It was: **how do you get off
-Tuxedo without rewriting decades of business logic that the carrier cannot afford
+The question wasn't really "how do we use less Tuxedo." It was: **how do you get
+off Tuxedo without rewriting decades of business logic the carrier cannot afford
 to invalidate?**
 
 ## What I actually built
 
-The honest framing matters here, because it's both more accurate and more impressive
-than the alternative.
+The honest framing matters here, because it's both more accurate and more
+impressive than the alternative.
 
-I designed and shipped a **migration framework** — a generic protocol shim plus a
-runtime that any Tuxedo-shaped service can drop into. We validated it end-to-end on
-one production service as a proof of concept. The framework is now being adopted by
+I designed and shipped a **migration framework** — a generic protocol shim, a
+Lex/Yacc transpiler, an in-house orchestrator, and a runtime that any
+Tuxedo-shaped service can drop into. We validated it end-to-end on one
+production service as a proof of concept. The framework is now being adopted by
 **CK Hutchison's [Three UK](https://www.amdocs.com/news-press/three-uk-expands-strategic-collaboration-amdocs-provide-consumers-next-generation-digital)
-and [Three Ireland](http://www.irishexaminer.com/business/arid-20387496.html)** for
-fleet-wide rollouts, each at their own pace and against the quirks of their own
-deployment.
+and [Three Ireland](http://www.irishexaminer.com/business/arid-20387496.html)**
+for fleet-wide rollouts, each at their own pace and against the quirks of their
+own deployment.
 
-That framing — framework + POC + adopters — is the real shape of the work. Calling it
-"migrated a backend" would have been an overclaim. Calling it a framework being
-rolled out across multiple Tier-1 carriers is **a platform-engineering story instead
-of a single-project story**, and it's defensible from the public Amdocs press
-record alone.
+That framing — framework + POC + adopters — is the real shape of the work.
+Calling it "migrated a backend" would have been an overclaim. Calling it a
+framework being rolled out across multiple Tier-1 carriers is **a
+platform-engineering story instead of a single-project story**, and it's
+defensible from the public Amdocs press record alone.
 
-## The protocol shim
+## The transpiler
 
-The headline technical claim is **zero changes to business code**. That deserves
-unpacking, because it's the difference between a six-month migration and a six-year
-migration.
+The headline technical claim — "zero changes to business code" — is delivered by
+the piece of the framework I'm proudest of: a **Lex/Yacc transpiler** that takes
+a legacy contract definition and emits the entire gRPC scaffolding around it.
 
-Tuxedo's wire format is what an old-school C programmer calls a "flattened buffer":
-a fixed-layout struct, padded to alignment, sent as raw bytes. Schema lives in C
-header files; type-safety lives in code review. Add a field and every consumer
-recompiles or breaks.
+Every Tuxedo service is described by a contract file: a small, declarative
+definition of the service's name, the request fields, the reply fields, their
+types, and how they're laid out in the flat buffer. These contract files exist
+because the C compiler needs them to generate stub code. They are, fortunately,
+exactly the right input to feed a parser.
 
-Modern services want the opposite: a strongly-typed, schema-versioned, language-agnostic
-RPC contract. Protobuf and gRPC fit that shape exactly.
+The transpiler does three things in one pass:
 
-The shim sits between the two:
+1. **Parses** the contract file using a Yacc grammar (Lex tokenizer in front).
+2. **Walks** the parse tree, applying a datatype-mapping table to translate
+   every C type into its Protobuf equivalent.
+3. **Emits**, from a single contract, three artifacts:
+   - a fully-formed `.proto` file with the gRPC service and message definitions,
+   - a C++ service-implementation **header** (`.hpp`) declaring each RPC method,
+   - a C++ service-implementation **source** (`.cpp`) wrapping each legacy C
+     function with the gRPC handler boilerplate.
 
-```protobuf
-// Old: a flattened-buffer style record (untyped on the wire)
-struct CustomerRequest {
-    char  customer_id[16];
-    char  request_type[8];
-    int   sequence;
-    char  payload[1024];   // payload bytes, parsed by request_type
-};
+Concretely, a sliced grammar fragment:
+
+```text
+contract
+    : service_decl method_list
+    ;
+
+method_decl
+    : METHOD IDENTIFIER '(' field_list ')' RETURNS '(' field_list ')'
+        { emit_proto_rpc($2, $4, $7);
+          emit_cpp_method_decl($2, $4, $7);
+          emit_cpp_method_impl($2, $4, $7); }
+    ;
+
+field_decl
+    : type_name IDENTIFIER ';'         { collect_field($1, $2, NULLABLE_DEFAULT); }
+    | type_name IDENTIFIER NULLABLE ';' { collect_field($1, $2, NULLABLE_TRUE); }
+    ;
 ```
 
-```protobuf
-// New: schema-versioned, oneof-typed payload, language-agnostic
-message CustomerRequest {
-  string customer_id = 1;
-  RequestType request_type = 2;
-  uint64 sequence = 3;
+A snippet of an emitted `.proto`:
 
-  oneof payload {
-    BillingPayload billing = 10;
-    AccountPayload account = 11;
-    ProvisioningPayload provisioning = 12;
-  }
+```protobuf
+syntax = "proto3";
+package customer;
+
+service CustomerService {
+  rpc GetMemo (GetMemoRequest) returns (GetMemoResponse);
+  rpc UpdateBalance (UpdateBalanceRequest) returns (UpdateBalanceResponse);
+}
+
+message GetMemoRequest {
+  string customer_id = 1;
+  uint32 memo_kind   = 2;
+  google.protobuf.StringValue locale = 3;  // nullable
 }
 ```
 
-The shim takes a small declarative description of a Tuxedo buffer's field layout and
-generates the encode / decode plumbing in both directions. A legacy C client keeps
-sending flattened buffers; a new gRPC service receives strongly-typed messages. A new
-gRPC client emits Protobuf; a still-legacy Tuxedo service receives a buffer that
-matches the C struct it has always expected.
+And the corresponding C++ service-implementation source the transpiler also
+emits, automatically wrapping the legacy C function:
 
-Concretely, services don't change. The shim changes the **protocol surface** —
+```cpp
+grpc::Status CustomerServiceImpl::GetMemo(
+    grpc::ServerContext*           ctx,
+    const customer::GetMemoRequest* req,
+    customer::GetMemoResponse*      resp) {
+  // 1. unmarshal Protobuf -> legacy flat buffer (codec table generated above)
+  CustomerMemoBuffer in_buf{};
+  pb_to_buf(*req, in_buf);
+
+  // 2. delegate to the unchanged legacy C function
+  CustomerMemoBuffer out_buf{};
+  int rc = legacy_get_customer_memo(&in_buf, &out_buf);
+  if (rc != 0) {
+    return ::grpc::Status(::grpc::StatusCode::INTERNAL,
+                          legacy_strerror(rc));
+  }
+
+  // 3. marshal flat buffer -> Protobuf reply
+  buf_to_pb(out_buf, *resp);
+  return ::grpc::Status::OK;
+}
+```
+
+The point here is leverage. **One contract file in, three correct, consistent
+artifacts out.** Every service migrated through the framework has the same
+shape, the same error semantics, the same null handling — because a deterministic
+transpiler emitted it. There's no "we did this one a little differently" drift.
+
+Same idea as the [WebFOCUS auto-converter](/case-studies/compiler-driven-quality/),
+applied to the protocol surface instead of the report surface. Parser-driven
+tools beat handwritten ones every time when the input language is yours to
+control.
+
+## Datatype mapping & null treatment
+
+The unglamorous half of the transpiler is the **datatype mapping table**. C and
+Protobuf disagree on enough type semantics to make naive mapping unsafe.
+
+The framework's mapping table is short and explicit:
+
+| C type                     | Protobuf type                  | Null treatment             |
+|----------------------------|--------------------------------|----------------------------|
+| `char[N]` (fixed string)   | `string`                       | empty string &harr; `\0`-pad |
+| `char*` (variable string)  | `string`                       | wrap in `StringValue` if nullable |
+| `int32_t` / `int`          | `sint32` (signed) / `int32`    | `Int32Value` if nullable   |
+| `int64_t` / `long long`    | `sint64` / `int64`             | `Int64Value` if nullable   |
+| `double`                   | `double`                       | `DoubleValue` if nullable  |
+| Fixed-width `BCD` decimals | `string` (canonical decimal)   | empty string &harr; null     |
+| Boolean flag (`'Y'`/`'N'`) | `bool`                         | `BoolValue` if nullable    |
+| Sentinel-typed enum        | `enum` (with `UNSPECIFIED = 0`)| `0` is null               |
+
+Two design decisions ride on this table.
+
+**Null is a first-class value, not a sentinel.** Legacy C code uses every
+flavor of "this field is missing": empty string, magic value `-1`, `'N'`, an
+explicit null flag in a side struct. The transpiler emits `google.protobuf`
+wrapper types (`StringValue`, `Int32Value`, etc.) for fields the contract marks
+as nullable, so the receiver always knows the difference between "zero" and
+"not set." Every one of the legacy sentinels gets translated explicitly, in
+both directions.
+
+**Decimals stay decimals.** Telecom billing is full of money fields that must
+not lose precision. We never let those touch `double`. Fixed-width BCD goes to
+canonical-decimal `string`; the consumer parses it with a decimal library on
+its own side.
+
+The table is small, the consequences are large. Every service in every carrier
+gets the same treatment.
+
+## The protocol shim & sequence flow
+
+The transpiler emits service-side scaffolding. The shim is the **client-side**
+piece — it sits between an unchanged legacy caller and the new gRPC service so
+the caller doesn't know the protocol changed underneath it.
+
+<Mermaid
+  code={tuxedoTpcallSequenceMermaid}
+  caption="Translation flow for a single tpcall(). The shim runs a Lex/Yacc-generated codec to encode the legacy flat buffer into Protobuf, calls the gRPC service through HAProxy + Consul, and decodes the response back to a flat buffer that satisfies the legacy caller's struct layout."
+/>
+
+Concretely, the shim takes a small declarative description of a Tuxedo buffer's
+field layout and generates the encode / decode plumbing in both directions. A
+legacy C client keeps sending flattened buffers; a new gRPC service receives
+strongly-typed messages. A new gRPC client emits Protobuf; a still-legacy
+Tuxedo service receives a buffer that matches the C struct it has always
+expected.
+
+Services don't change. The shim changes the **protocol surface** —
 business logic, validation rules, database access, caching, every line of the
-domain layer — survives the migration untouched. That's the leverage. Decades of
-hard-won correctness in billing and provisioning code does not get re-litigated.
+domain layer — survives the migration untouched. That's the leverage. Decades
+of hard-won correctness in billing and provisioning code does not get
+re-litigated.
+
+## Conversational services with session affinity
+
+Most modern gRPC traffic is unary: one request, one response, stateless. Tuxedo
+applications don't all fit that shape. A meaningful fraction of services are
+**conversational** — `tpconnect` opens a session, `tpsend` / `tprecv` exchange
+messages back and forth across that session, `tpdiscon` ends it. State lives
+on the server for the duration of the conversation.
+
+This is the unique architectural contribution of the framework. The naive map
+("just use server-streaming gRPC") doesn't work, because the load balancer
+will happily land subsequent calls on a different backend that doesn't have
+the session state. The session has to be sticky.
+
+The pattern we settled on:
+
+1. **Conversational RPCs are bidirectional streaming gRPC.** One stream per
+   `tpconnect`. The shim opens it; closes it on `tpdiscon`.
+2. **HAProxy routes by a session-affinity cookie**, set on the first frame of
+   the stream. Subsequent frames on the same connection follow the same route;
+   subsequent connections that present the same session token also route to
+   the same backend if it's healthy.
+3. **Service-side, sessions live in a small in-memory registry** keyed by
+   session token. The registry has a short TTL so a crashed client doesn't leak
+   state forever; the shim sends keep-alives over the stream to keep it alive
+   while the user is still in the flow.
+4. **Failover is explicit, not implicit.** If a backend dies mid-conversation,
+   the client sees an explicit `STREAM_ABORTED` and can retry from the start of
+   the conversation rather than from the middle. Hidden retries on stateful
+   sessions are how production data gets corrupted, so we don't do them.
+
+Same primitives as stateless gRPC; an extra agreement on top about how state
+flows. Documented once, used everywhere.
+
+## Multi-language client stub generation
+
+Once a service has a `.proto`, every gRPC ecosystem can generate clients off
+it. The framework ships two, both auto-generated as part of the build:
+
+- **Java clients via Maven `protobuf-maven-plugin`.** A small POM template
+  consumes the per-service `.proto` and emits a versioned JAR with strongly-
+  typed stubs. JVM-side teams import the JAR like any other dependency.
+
+  ```xml
+  <build>
+    <extensions>
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+        <configuration>
+          <protocArtifact>com.google.protobuf:protoc</protocArtifact>
+          <pluginId>grpc-java</pluginId>
+          <pluginArtifact>io.grpc:protoc-gen-grpc-java</pluginArtifact>
+        </configuration>
+        <executions>
+          <execution><goals><goal>compile</goal><goal>compile-custom</goal></goals></execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  ```
+
+- **C++ clients via CMake.** A reusable CMake function (`grpc_generate(...)`)
+  wraps `protoc` plus the gRPC plugin and generates stubs at build time, no
+  manual codegen step.
+
+  ```cmake
+  find_package(Protobuf CONFIG REQUIRED)
+  find_package(gRPC CONFIG REQUIRED)
+
+  function(grpc_generate target proto_file)
+    get_filename_component(proto_dir "${proto_file}" DIRECTORY)
+    set(out_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
+    file(MAKE_DIRECTORY "${out_dir}")
+    add_custom_command(
+      OUTPUT  "${out_dir}/${target}.pb.cc" "${out_dir}/${target}.grpc.pb.cc"
+      COMMAND protobuf::protoc
+      ARGS    --proto_path="${proto_dir}"
+              --cpp_out="${out_dir}"
+              --grpc_out="${out_dir}"
+              --plugin=protoc-gen-grpc=$<TARGET_FILE:gRPC::grpc_cpp_plugin>
+              "${proto_file}"
+      DEPENDS "${proto_file}"
+    )
+    target_sources(${target} PRIVATE
+      "${out_dir}/${target}.pb.cc"
+      "${out_dir}/${target}.grpc.pb.cc")
+    target_include_directories(${target} PRIVATE "${out_dir}")
+  endfunction()
+  ```
+
+The same `.proto` drives both. Adding a third language (Go, Rust, Python) is a
+matter of plugging the appropriate `protoc` plugin into the same pipeline; no
+schema work changes.
+
+## In-house orchestrator
+
+Tuxedo's process management — start, stop, supervise, restart on failure, fan
+out across a cluster — is one of the legitimately good things it gives you for
+free. When the protocol changes underneath but the deployment model has to stay
+non-containerized for risk-control reasons, you have to replace process
+management with something equivalent.
+
+The framework's answer is an **in-house orchestrator** — three small pieces
+that together do what Tuxedo's `tlisten` / `tmboot` / `tmshutdown` did, but
+generic across languages:
+
+- A **Java Spring Boot brain.** A control-plane service that knows the cluster
+  topology, owns the desired-state model ("on this host, run these N replicas
+  of these M services"), and reconciles toward it. Exposes a small REST API
+  and a CLI surface.
+- **Python host agents.** A daemon on every host that takes commands from the
+  brain, supervises child processes (gRPC services), reports health and
+  resource usage upstream, and handles graceful drain on shutdown. Python was
+  the right choice for the host agent specifically because it's the one
+  language already installed on every box in the fleet — no new dependency to
+  ship.
+- A **Python CLI.** What an operator actually types. `orctl deploy <service>
+  --replicas 4 --host pool-A`, `orctl drain <host>`, `orctl status`. The CLI
+  hits the brain's REST API; the brain decides the plan; the host agents
+  execute it. Each command is idempotent and reports what it did.
+
+The orchestrator slots in alongside Nomad rather than replacing it. Nomad
+handles the workloads that fit its model cleanly; the orchestrator handles the
+ones that have non-containerized deployment requirements (signed binaries on
+specific kernels, hardware-licensed workloads, regulatory constraints). Same
+external surface — register a service, scale a service, drain a host —
+different execution underneath.
+
+## The PowerBuilder client challenge
+
+A footnote in the architecture, but a real one in the rollout: a non-trivial
+slice of legacy clients are **PowerBuilder** desktop apps that were written
+when "RPC" meant Tuxedo. PowerBuilder doesn't speak HTTP/2, which gRPC needs.
+"Rewrite the desktop apps" was, predictably, not on the table.
+
+The fix is a **custom DLL** — a thin gRPC-over-HTTP/2 transport written in
+C++, exposed as a PowerBuilder external function library. The DLL handles the
+HTTP/2 framing, TLS, and gRPC's length-prefixed message format; the
+PowerBuilder side calls into it through a tiny synchronous API that looks
+almost exactly like the Tuxedo `tpcall` it replaces. Drop in the DLL; the rest
+of the desktop app keeps working.
+
+Unglamorous, decisive. **The rollout would not have completed without it.**
 
 ## The runtime
 
-The shim is the small clever piece. The runtime is the unglamorous piece that makes
-it work in production.
+The transpiler is the small clever piece. The runtime is the unglamorous piece
+that makes it work in production.
 
-The architecture diagram above lays out the moving parts. Five components, each
-doing exactly one job:
+<Mermaid
+  code={tuxedoArchitectureMermaid}
+  caption="Runtime: legacy Tuxedo clients hit the protocol shim, which speaks gRPC to the polyglot service mesh. HAProxy fronts the mesh; Consul publishes service identity; Consul Template syncs HAProxy config; Nomad orchestrates the containerized half; the in-house orchestrator handles the non-containerized half. Kafka unlocks event-driven flows once the migration completes."
+/>
+
+Six components, each doing exactly one job:
 
 - **HAProxy** is the front door. Every incoming gRPC call lands here and gets
-  load-balanced across whatever backends Consul currently knows about. HAProxy is
-  rock-solid, well-understood, and replaceable — Envoy or NGINX could slot into
-  the same role with no other changes.
-- **Consul** is the service registry. Every gRPC service registers itself on startup
-  with health checks; Consul keeps the live map of "which services are healthy at
-  which addresses." Service discovery without a special client library — services
-  look services up by name, not by address.
+  load-balanced across whatever backends Consul currently knows about. HAProxy
+  is rock-solid, well-understood, and replaceable — Envoy or NGINX could slot
+  into the same role with no other changes.
+- **Consul** is the service registry. Every gRPC service registers itself on
+  startup with health checks; Consul keeps the live map of "which services are
+  healthy at which addresses." Service discovery without a special client
+  library — services look services up by name, not by address.
 - **Consul Template** is the bridge between Consul and HAProxy. It watches the
-  Consul catalog, regenerates HAProxy's config file when the topology changes, and
-  triggers a reload. New service instances join the mesh in seconds without anyone
-  editing a config file.
-- **Nomad** is the orchestrator. It schedules services across the cluster, scales
-  replicas based on load or schedule, and handles deploys. Same shape as Kubernetes
-  for our purposes; significantly simpler operational footprint.
+  Consul catalog, regenerates HAProxy's config file when the topology changes,
+  and triggers a reload. New service instances join the mesh in seconds without
+  anyone editing a config file.
+- **Nomad** is the orchestrator for containerized workloads. Same shape as
+  Kubernetes for our purposes; significantly simpler operational footprint.
+- **The in-house orchestrator** (above) handles the workloads that aren't
+  containerized.
 - **Kafka** is the open door. Once services speak gRPC, wiring them into event
   streams is no longer a special project — it's just another service. Real-time
-  billing event flows, audit pipelines, downstream analytics all become trivially
-  available.
+  billing event flows, audit pipelines, downstream analytics all become
+  trivially available.
 
 Picking HashiCorp tools (Consul + Nomad + Consul Template) was deliberate: each
 piece is replaceable, well-documented, OSS, and operationally calm. If a future
-adopter wants HAProxy → Envoy, Nomad → Kubernetes, or Consul → etcd, the swap is
-straightforward because nothing in the framework depends on the specific tool. It
-depends on the **role** each tool plays.
+adopter wants HAProxy &rarr; Envoy, Nomad &rarr; Kubernetes, or Consul &rarr;
+etcd, the swap is straightforward because nothing in the framework depends on
+the specific tool. It depends on the **role** each tool plays.
 
 ## What shipped, who's using it
 
-The POC was a single production service migrated end-to-end. Same business logic,
-same data flows, same database — but now reachable over gRPC, observable through
-the new mesh, deployable through Nomad, and (newly) able to publish into Kafka.
+The POC was a single production service migrated end-to-end. Same business
+logic, same data flows, same database — but now reachable over gRPC,
+observable through the new mesh, deployable through Nomad and the
+orchestrator, and (newly) able to publish into Kafka.
 
 That POC is the proof. The carrier sign-off was: *if this works for one service
 without changing business code, it works for the rest.*
 
 Public press confirms the adopters. Both are CK Hutchison subsidiaries:
 
-- **Three UK** — the [Amdocs strategic-collaboration announcement (Aug 2021)](https://www.amdocs.com/news-press/three-uk-expands-strategic-collaboration-amdocs-provide-consumers-next-generation-digital)
-  and the [end-to-end digital-transformation completion writeup](https://www.thefastmode.com/technology-solutions/24812-three-uk-amdocs-complete-e2e-digital-transformation-project)
+- **Three UK** — the
+  [Amdocs strategic-collaboration announcement (Aug 2021)](https://www.amdocs.com/news-press/three-uk-expands-strategic-collaboration-amdocs-provide-consumers-next-generation-digital)
+  and the
+  [end-to-end digital-transformation completion writeup](https://www.thefastmode.com/technology-solutions/24812-three-uk-amdocs-complete-e2e-digital-transformation-project)
   cover the broader engagement.
-- **Three Ireland** — public reporting via the [Irish Examiner](http://www.irishexaminer.com/business/arid-20387496.html)
+- **Three Ireland** — public reporting via the
+  [Irish Examiner](http://www.irishexaminer.com/business/arid-20387496.html)
   on the Amdocs partnership.
 
-The framework is the connective tissue both rollouts run on. Each carrier's system
-has slightly different quirks; the framework adapts without changing.
+The framework is the connective tissue both rollouts run on. Each carrier's
+system has slightly different quirks; the framework adapts without changing.
+
+<PullQuote attribution="The framing that survived every review.">
+  If this works for one service without changing business code, it works for the
+  rest.
+</PullQuote>
 
 ## Lessons
 
 A few things that turned out to matter more than I expected.
 
 **Honest framing scales better than aspirational framing.** A reusable framework
-adopted by multiple Tier-1 carriers is a stronger signal than "migrated a backend."
-It also survives a hostile interview question: "Did you really migrate the whole
-thing?" "No — I built the framework that is migrating it. Here's the POC. Here are
-the adopters."
+adopted by multiple Tier-1 carriers is a stronger signal than "migrated a
+backend." It also survives a hostile interview question: *"Did you really
+migrate the whole thing?"* No — I built the framework that is migrating it.
+Here's the POC. Here are the adopters.
 
-**Migrate the protocol surface, not the application layer.** The reason this finished
-in months instead of years is that no one had to re-litigate billing logic or
-provisioning rules. The schema for those domains stayed in the database and in the
-service code. What changed was the wire format. That's a much smaller change than it
-looks like.
+**Migrate the protocol surface, not the application layer.** The reason this
+finished in months instead of years is that no one had to re-litigate billing
+logic or provisioning rules. The schema for those domains stayed in the
+database and in the service code. What changed was the wire format. That's a
+much smaller change than it looks like.
+
+**The transpiler is the leverage.** Hand-writing one `.proto` per service and
+one wrapper per RPC is a six-month project times every service. Generating
+them from the existing contract files turns the same work into a few weeks of
+grammar work plus a forever-running build step. The expensive part of any
+migration is the cases where the team has to make a decision about each
+service; the cheap part is the cases where a deterministic tool emits the
+right answer.
 
 **Pick infrastructure pieces that each do one job.** HAProxy doesn't know about
 Consul. Consul doesn't know about Nomad. Consul Template is the only piece that
-spans two — and it's a thin daemon. Each component is individually swappable and
-operationally calm. The framework outlives any single tool choice.
+spans two — and it's a thin daemon. Each component is individually swappable
+and operationally calm. The framework outlives any single tool choice.
 
 **The economics live in the licensing, not the engineering.** Tuxedo's cost is
 recurring and per-processor. The migration's payoff is removing the recurring
-licensing surface, not the one-time engineering cost. That framing changes how the
-program gets evaluated by everyone above the engineering org.
+licensing surface, not the one-time engineering cost. That framing changes how
+the program gets evaluated by everyone above the engineering org.

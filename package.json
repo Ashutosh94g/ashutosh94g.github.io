@@ -12,7 +12,9 @@
     "astro": "astro",
     "check": "astro check",
     "resume:sync": "node scripts/sync-resume.mjs",
-    "og:build": "node scripts/build-og.mjs"
+    "og:build": "node scripts/build-og.mjs",
+    "favicons:build": "node scripts/build-favicons.mjs",
+    "assets:build": "node scripts/build-og.mjs && node scripts/build-favicons.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",
@@ -32,6 +34,8 @@
     "node": ">=22.12"
   },
   "devDependencies": {
-    "@resvg/resvg-js": "^2.6.2"
+    "@astrojs/check": "^0.9.8",
+    "@resvg/resvg-js": "^2.6.2",
+    "typescript": "^5.9.3"
   }
 }

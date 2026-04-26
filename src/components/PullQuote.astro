@@ -1,0 +1,30 @@
+---
+interface Props {
+  attribution?: string;
+}
+
+const { attribution } = Astro.props;
+---
+
+<figure class="my-10 not-prose">
+  <div class="relative pl-8 sm:pl-12 border-l-2 border-[var(--color-accent-400)]">
+    <span
+      class="absolute -left-3 -top-3 font-serif text-6xl sm:text-7xl leading-none text-[var(--color-accent-400)] select-none pointer-events-none"
+      aria-hidden="true"
+    >
+      &ldquo;
+    </span>
+    <blockquote
+      class="font-serif italic text-xl sm:text-2xl leading-relaxed text-[var(--fg)] m-0 p-0"
+    >
+      <slot />
+    </blockquote>
+    {
+      attribution && (
+        <figcaption class="mt-4 text-sm not-italic text-[var(--fg-subtle)]">
+          &mdash; {attribution}
+        </figcaption>
+      )
+    }
+  </div>
+</figure>

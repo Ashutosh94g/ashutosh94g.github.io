@@ -1,0 +1,138 @@
+---
+interface Props {
+  value: string;
+  prefix?: string;
+  suffix?: string;
+  label: string;
+  caption?: string;
+  align?: 'left' | 'center';
+}
+
+const {
+  value,
+  prefix = '',
+  suffix = '',
+  label,
+  caption,
+  align = 'left',
+} = Astro.props;
+
+const alignClass = align === 'center' ? 'text-center items-center' : 'text-left items-start';
+---
+
+<div class={`flex flex-col ${alignClass} gap-1`}>
+  <div class="flex items-baseline gap-1 font-mono">
+    {prefix && <span class="text-[var(--fg-muted)] text-lg sm:text-xl">{prefix}</span>}
+    <span
+      class="counter-value font-serif font-semibold tracking-tight text-3xl sm:text-4xl text-[var(--fg)]"
+      data-value={value}
+      data-prefix={prefix}
+      data-suffix={suffix}
+    >
+      {prefix}{value}{suffix}
+    </span>
+    {suffix && !suffix.startsWith('+') && (
+      <span class="text-[var(--fg-muted)] text-lg sm:text-xl">{suffix}</span>
+    )}
+  </div>
+  <div class="text-xs uppercase tracking-wider font-medium text-[var(--fg-subtle)]">
+    {label}
+  </div>
+  {caption && (
+    <div class="text-sm text-[var(--fg-muted)] mt-1 leading-snug">
+      {caption}
+    </div>
+  )}
+</div>
+
+<script>
+  type CounterEl = HTMLElement & { dataset: { value: string; prefix?: string; suffix?: string; counterDone?: string } };
+
+  const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+  function parseValue(raw: string): { num: number; suffix: string } {
+    // Tolerate "1,200", "18M", "99.6%", "<$10", "6/8" etc.
+    const trimmed = raw.trim();
+    // If non-pure-numeric, no animation.
+    const matched = trimmed.match(/^([0-9,.]+)(.*)$/);
+    if (!matched) return { num: NaN, suffix: trimmed };
+    const numeric = Number(matched[1].replace(/,/g, ''));
+    if (Number.isNaN(numeric)) return { num: NaN, suffix: trimmed };
+    return { num: numeric, suffix: matched[2] ?? '' };
+  }
+
+  function formatNum(n: number, originalRaw: string): string {
+    if (originalRaw.includes(',')) {
+      return Math.round(n).toLocaleString('en-US');
+    }
+    if (originalRaw.includes('.')) {
+      const decimals = (originalRaw.split('.')[1] || '').length;
+      return n.toFixed(decimals);
+    }
+    return Math.round(n).toString();
+  }
+
+  function animate(el: CounterEl) {
+    if (el.dataset.counterDone === '1') return;
+    const raw = el.dataset.value || '';
+    const prefix = el.dataset.prefix || '';
+    const suffixData = el.dataset.suffix || '';
+    const { num, suffix: parsedSuffix } = parseValue(raw);
+
+    const finalSuffix = parsedSuffix + suffixData;
+
+    if (Number.isNaN(num)) {
+      // Pure non-numeric: just display.
+      el.textContent = `${prefix}${raw}${suffixData}`;
+      el.dataset.counterDone = '1';
+      return;
+    }
+
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    if (reducedMotion) {
+      el.textContent = `${prefix}${raw}${suffixData}`;
+      el.dataset.counterDone = '1';
+      return;
+    }
+
+    el.dataset.counterDone = '1';
+    const duration = 1100;
+    const start = performance.now();
+
+    function step(now: number) {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = easeOutCubic(t);
+      const current = num * eased;
+      el.textContent = `${prefix}${formatNum(current, raw)}${finalSuffix}`;
+      if (t < 1) requestAnimationFrame(step);
+      else el.textContent = `${prefix}${raw}${suffixData}`;
+    }
+    requestAnimationFrame(step);
+  }
+
+  function init() {
+    const counters =
+      document.querySelectorAll<CounterEl>('.counter-value:not([data-counter-bound])');
+    if (!counters.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            animate(entry.target as CounterEl);
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.4 },
+    );
+    counters.forEach((el) => {
+      el.dataset.counterBound = '1';
+      observer.observe(el);
+    });
+  }
+
+  init();
+  document.addEventListener('astro:after-swap', init);
+</script>

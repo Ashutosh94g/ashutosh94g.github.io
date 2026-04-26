@@ -1,0 +1,13 @@
+{
+  "name": "Ashutosh Modi",
+  "short_name": "AM",
+  "description": "Backend engineer building platform infrastructure for Tier-1 telecom carriers — distributed systems, parser-driven tooling, and an internal AI knowledge engine.",
+  "icons": [
+    { "src": "/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon-32.png", "sizes": "32x32", "type": "image/png" }
+  ],
+  "theme_color": "#0f172a",
+  "background_color": "#f8fafc",
+  "display": "standalone",
+  "start_url": "/"
+}

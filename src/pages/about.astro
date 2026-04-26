@@ -1,0 +1,291 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Timeline from '../components/Timeline.astro';
+import StatusPill from '../components/StatusPill.astro';
+import DotGrid from '../components/DotGrid.astro';
+
+const careerItems = [
+  {
+    date: 'Apr 2026',
+    title: 'Pinnacle Performer (Q1 FY26)',
+    meta: 'Amdocs',
+    description:
+      "Top-performance recognition awarded across the engineering org. Cited for the gRPC migration framework and Atlas knowledge engine.",
+  },
+  {
+    date: 'Feb 2026',
+    title: 'Employee of the Month',
+    meta: 'Amdocs',
+    description:
+      "Second time. Awarded for sustained delivery on platform infrastructure and the internal AI development platform rollout.",
+  },
+  {
+    date: 'Aug 2025 — Present',
+    title: 'Owner: internal AI development platform',
+    meta: 'Cursor + Atlas',
+    description:
+      "Built Atlas — a layered, atom-graphed knowledge engine over an 18M-line legacy backend — and the team's catalog of skills, rules, and workflow conventions that ride on top of it.",
+  },
+  {
+    date: 'Jun 2025 — Present',
+    title: 'Designer & primary engineer: Tuxedo \u2192 gRPC migration framework',
+    meta: 'Three UK + Three Ireland (CK Hutchison)',
+    description:
+      "Lex/Yacc transpiler, protocol shim, in-house orchestrator, full HAProxy + Consul + Nomad runtime. Validated as a POC; now in fleet rollout across two CK Hutchison carriers.",
+  },
+  {
+    date: 'Dec 2025',
+    title: 'Acting tech lead (unofficial)',
+    meta: 'Amdocs',
+    description:
+      "Took on architecture, design, and review responsibilities across the platform-infrastructure track while continuing to ship as an IC.",
+  },
+  {
+    date: 'Jul 2024 — Present',
+    title: 'XFocus + WebFOCUS auto-converter',
+    meta: 'Reporting platform',
+    description:
+      "Lex/Yacc compiler that auto-converts WebFOCUS reports into the in-house Pandas/NumPy library. 48 hrs/script down to 40 mins; 500+ scripts migrated.",
+  },
+  {
+    date: 'Feb 2025',
+    title: 'Employee of the Month',
+    meta: 'Amdocs',
+    description:
+      "First recognition; cited for the prototype-generator rollout and adopting compile-time gates across the C/C++ codebase.",
+  },
+  {
+    date: 'Jun 2023 — Sep 2023',
+    title: 'C/C++ prototype generator',
+    meta: 'Lex/Yacc + build pipeline',
+    description:
+      "Build-time compiler that auto-generates and enforces function prototypes across 500+ C files. Catches ~80% of would-be production defects at compile time.",
+  },
+  {
+    date: 'Sep 2022 — Present',
+    title: 'Software Developer',
+    meta: 'Amdocs, Gurgaon',
+    description:
+      "Joined as a backend engineer on Tier-1 telecom platform infrastructure. Telecom domain, distributed systems, parser-driven tooling.",
+  },
+  {
+    date: '2021 \u2013 2022',
+    title: 'Placement Head',
+    meta: 'Guru Nanak Dev University (GNDU)',
+    description:
+      "Led campus placements for the engineering cohort: outreach, scheduling, and coordination across recruiters and the institute.",
+  },
+  {
+    date: '2020',
+    title: 'Google Cloud Workshop \u2014 winner',
+    meta: 'GNDU',
+    description:
+      "Inter-college workshop on Google Cloud Platform fundamentals. Best-in-cohort.",
+  },
+];
+
+const quickFacts = [
+  { label: 'Location', value: 'Gurgaon, Haryana, India' },
+  { label: 'Role', value: 'Software Developer at Amdocs' },
+  { label: 'Time zone', value: 'IST (UTC+5:30)' },
+  {
+    label: 'Languages',
+    value: 'C, C++, Python, Java, Go (learning), SQL / PL/SQL, Bash',
+  },
+  {
+    label: 'Tools',
+    value: 'Lex/Yacc, gRPC + Protobuf, HAProxy, Consul, Nomad, Kafka, Cursor',
+  },
+  {
+    label: 'Languages spoken',
+    value: 'English, Hindi, Punjabi',
+  },
+  {
+    label: 'Open to',
+    value: 'Platform & systems work, deep migrations, AI infrastructure',
+  },
+];
+---
+
+<BaseLayout
+  title="About"
+  description="Backend engineer at Amdocs working on platform infrastructure for Tier-1 telecom carriers — distributed systems, parser-driven tooling, and an internal AI knowledge engine."
+>
+  <section class="relative overflow-hidden border-b border-[var(--border)]">
+    <div class="absolute inset-0 hero-glow pointer-events-none" aria-hidden="true"></div>
+    <DotGrid variant="sparse" fade="bottom" />
+
+    <div class="relative max-w-5xl mx-auto px-5 sm:px-8 pt-12 pb-12 sm:pt-16">
+      <div class="fade-up">
+        <StatusPill>About this site</StatusPill>
+      </div>
+      <h1
+        class="fade-up font-serif text-4xl sm:text-5xl lg:text-[3.5rem] font-semibold tracking-tight leading-[1.04] mt-5 mb-5"
+      >
+        Backend engineer who likes <span class="gradient-text">parsers, distributed systems, and old code.</span>
+      </h1>
+      <p
+        class="fade-up-delay-1 text-lg sm:text-xl text-[var(--fg-muted)] leading-relaxed max-w-2xl"
+      >
+        Three years into a career spent at the layer where Tier-1 telecom
+        backends actually run.
+      </p>
+    </div>
+  </section>
+
+  <section class="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10 lg:gap-14">
+      <div class="prose">
+        <h2>The short version</h2>
+
+        <p>
+          I'm a backend engineer at <a href="https://www.amdocs.com/" target="_blank"
+            rel="noopener">Amdocs</a
+          > working on platform infrastructure for Tier-1 telecom carriers. The
+          short version of what that means: I help large operators get their
+          twenty-year-old core backends — billing, provisioning, customer care,
+          all the unglamorous stuff that has to be right — onto modern
+          infrastructure without rewriting decades of business logic.
+        </p>
+
+        <p>
+          The three pieces of work that take up most of my brain right now are
+          on the <a href="/#case-studies">case studies page</a>, but the
+          one-paragraph version is: a <strong>Tuxedo &rarr; gRPC migration
+          framework</strong> built around a Lex/Yacc transpiler and an in-house
+          orchestrator, currently rolling out across CK Hutchison's Three UK and
+          Three Ireland; <strong>Atlas</strong>, a knowledge engine over an
+          18M-line legacy codebase that turns the codebase into a layered,
+          atom-graphed, AI-queryable map; and a pair of <strong>Lex/Yacc
+          compilers</strong> that turn legacy-code problems into compile-time
+          problems.
+        </p>
+
+        <h2>How I got here</h2>
+
+        <p>
+          I joined Amdocs as a software developer in <strong>September
+          2022</strong>, straight out of an engineering program at Guru Nanak
+          Dev University where I'd been the institute's Placement Head and
+          spent more time than I should have admitting writing C and Python for
+          fun. Telecom backend wasn't on my career bingo card. It turned out to
+          be exactly the kind of work I liked: real systems, real consequences,
+          old code, deep stack, every layer of the problem visible. The
+          longer I've been here, the less I want to do anything that isn't
+          shaped like that.
+        </p>
+
+        <p>
+          The path through the work has been one project naturally pulling out
+          the next: the prototype generator showed me what compile-time gates
+          do for legacy code; the WebFOCUS converter showed me the same shape
+          on a different language; the Tuxedo framework is the same idea
+          applied to the <em>protocol</em> surface; Atlas is the same idea
+          applied to the <em>knowledge</em> surface. Parsers and grammars
+          everywhere, basically. I can't help it.
+        </p>
+
+        <h2>What I'm looking for next</h2>
+
+        <p>
+          Two flavors of work I'd happily do for the next several years:
+        </p>
+
+        <ul>
+          <li>
+            <strong>Platform &amp; systems work</strong> — distributed systems,
+            migration frameworks, deep refactors of legacy infrastructure that
+            actually has to keep working through the migration. The kind of
+            project where the question "what's the smallest thing we can
+            change?" matters more than the answer.
+          </li>
+          <li>
+            <strong>AI infrastructure</strong> — knowledge engineering for
+            real codebases (not toy ones), tooling that makes coding agents
+            reliably useful on the kind of code that breaks them, the
+            unglamorous pipework that turns research into production. Atlas is
+            the bet I'm making on this; I want to make more of them.
+          </li>
+        </ul>
+
+        <p>
+          Less interesting to me: greenfield CRUD, anything where the code
+          base is too young to have learned its own lessons, or workplaces
+          where the answer to "how does this work" is consistently "ask
+          someone." I like systems that have to be understood; I like teams
+          that take time to write that understanding down.
+        </p>
+
+        <h2>Outside the work</h2>
+
+        <p>
+          I read more than is strictly defensible — mostly engineering essays
+          and the occasional history book. I write notes about the things I'm
+          building, sometimes publicly (see <a href="/writing/">writing</a>),
+          mostly privately. I keep an eye on the <a href="/now/">/now</a> page
+          when my focus shifts.
+        </p>
+
+        <p>
+          The best places to reach me are listed at the bottom of every page
+          on this site. Email is the highest-fidelity channel; LinkedIn for
+          recruiters and people I haven't met yet; GitHub for the code.
+        </p>
+      </div>
+
+      <aside
+        class="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-6 sm:p-7 self-start sticky top-20 shadow-[var(--shadow-card)]"
+      >
+        <p
+          class="text-xs uppercase tracking-[0.18em] font-medium text-[var(--fg-subtle)] mb-4"
+        >
+          Quick facts
+        </p>
+        <dl class="space-y-4">
+          {
+            quickFacts.map((f) => (
+              <div>
+                <dt class="text-[11px] uppercase tracking-wider font-medium text-[var(--fg-subtle)]">
+                  {f.label}
+                </dt>
+                <dd class="text-sm text-[var(--fg)] m-0 leading-snug mt-0.5">
+                  {f.value}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <hr class="my-5 border-[var(--border)]" />
+
+        <a
+          href="/resume.pdf"
+          class="block text-center px-4 py-2 rounded-md bg-[var(--color-accent-600)] text-white no-underline font-medium hover:bg-[var(--color-accent-700)] transition-colors text-sm shadow-[0_8px_20px_-8px_rgba(79,70,229,0.6)]"
+        >
+          Resume (PDF)
+        </a>
+      </aside>
+    </div>
+  </section>
+
+  <section
+    class="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-16 border-t border-[var(--border)]"
+  >
+    <header class="max-w-3xl mb-10">
+      <p
+        class="text-xs uppercase tracking-[0.2em] font-medium text-[var(--color-accent-600)] dark:text-[var(--color-accent-400)] mb-3"
+      >
+        Career timeline
+      </p>
+      <h2 class="font-serif text-3xl sm:text-4xl font-semibold tracking-tight mb-3">
+        From placement head to platform engineer.
+      </h2>
+      <p class="text-[var(--fg-muted)] leading-relaxed max-w-2xl">
+        The shape of three-and-a-half years at Amdocs, with a few earlier
+        markers that mattered. Most recent at the top.
+      </p>
+    </header>
+
+    <Timeline items={careerItems} />
+  </section>
+</BaseLayout>

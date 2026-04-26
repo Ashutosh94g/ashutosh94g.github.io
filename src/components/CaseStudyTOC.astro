@@ -1,0 +1,89 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+const filtered = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  filtered.length > 0 && (
+    <nav
+      class="case-toc not-prose"
+      aria-label="On this page"
+      data-toc
+    >
+      <p class="text-xs uppercase tracking-widest font-medium text-[var(--fg-subtle)] mb-3">
+        On this page
+      </p>
+      <ul class="list-none m-0 p-0 space-y-0">
+        {filtered.map((h) => (
+          <li>
+            <a
+              href={`#${h.slug}`}
+              class={`toc-link ${h.depth === 3 ? 'is-h3' : ''}`}
+              data-toc-link={h.slug}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<script>
+  function initToc() {
+    const tocs = document.querySelectorAll<HTMLElement>('[data-toc]');
+    if (!tocs.length) return;
+
+    const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+    const slugMap = new Map<string, HTMLAnchorElement>();
+    links.forEach((a) => {
+      const slug = a.dataset.tocLink;
+      if (slug) slugMap.set(slug, a);
+    });
+
+    const headingEls = Array.from(slugMap.keys())
+      .map((slug) => document.getElementById(slug))
+      .filter((el): el is HTMLElement => Boolean(el));
+
+    if (!headingEls.length) return;
+
+    let active: string | null = null;
+    function setActive(slug: string | null) {
+      if (slug === active) return;
+      active = slug;
+      links.forEach((a) => a.classList.remove('is-active'));
+      if (slug) {
+        const link = slugMap.get(slug);
+        link?.classList.add('is-active');
+      }
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (visible.length === 0) return;
+        // Pick the topmost visible heading.
+        visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        const id = visible[0].target.id;
+        if (id) setActive(id);
+      },
+      { rootMargin: '-80px 0px -65% 0px', threshold: 0 },
+    );
+
+    headingEls.forEach((el) => observer.observe(el));
+
+    // Default to first.
+    setActive(headingEls[0].id);
+  }
+
+  initToc();
+  document.addEventListener('astro:after-swap', initToc);
+</script>

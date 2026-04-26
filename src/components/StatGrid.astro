@@ -1,0 +1,48 @@
+---
+import Counter from './Counter.astro';
+
+interface Stat {
+  value: string;
+  prefix?: string;
+  suffix?: string;
+  label: string;
+  caption?: string;
+}
+
+interface Props {
+  stats: Stat[];
+  cols?: 2 | 3 | 4;
+  variant?: 'inline' | 'cards';
+}
+
+const { stats, cols = 4, variant = 'inline' } = Astro.props;
+
+const colsClass = {
+  2: 'grid-cols-2',
+  3: 'grid-cols-2 sm:grid-cols-3',
+  4: 'grid-cols-2 sm:grid-cols-4',
+}[cols];
+---
+
+<div class={`grid ${colsClass} gap-x-6 gap-y-7`}>
+  {
+    stats.map((s) => (
+      <div
+        class={
+          variant === 'cards'
+            ? 'rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] p-4 shadow-[var(--shadow-card)]'
+            : 'border-l border-[var(--border)] pl-4'
+        }
+      >
+        <Counter
+          value={s.value}
+          prefix={s.prefix}
+          suffix={s.suffix}
+          label={s.label}
+          caption={s.caption}
+          align="left"
+        />
+      </div>
+    ))
+  }
+</div>
