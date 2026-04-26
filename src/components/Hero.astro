@@ -1,111 +1,192 @@
 ---
 import StatusPill from './StatusPill.astro';
-import StatGrid from './StatGrid.astro';
 import DotGrid from './DotGrid.astro';
-
-const social = [
-  {
-    href: 'https://github.com/ashutosh94g',
-    label: 'GitHub',
-    external: true,
-    primary: false,
-  },
-  {
-    href: 'https://www.linkedin.com/in/ashutosh94g/',
-    label: 'LinkedIn',
-    external: true,
-    primary: false,
-  },
-  {
-    href: 'mailto:ashutosh94g@gmail.com',
-    label: 'Email',
-    external: false,
-    primary: false,
-  },
-  { href: '/resume.pdf', label: 'Resume (PDF)', external: false, primary: true },
-];
+import Avatar from './Avatar.astro';
 
 const stats = [
-  { value: '18M', suffix: '+', label: 'Lines analyzed', caption: 'C / Pro*C / shell' },
-  { value: '500', suffix: '+', label: 'Scripts auto-converted', caption: 'WebFOCUS \u2192 XFocus' },
-  { value: '1,200', suffix: '+', label: 'Reasoning atoms', caption: 'Truth-grounded' },
-  { value: '99.6', suffix: '%', label: 'Atom verification', caption: 'Atlas pass rate' },
+  { value: '18M+', label: 'Lines analyzed', caption: 'C / Pro*C / shell' },
+  { value: '500+', label: 'Scripts auto-converted', caption: 'WebFOCUS \u2192 XFocus' },
+  { value: '1,200+', label: 'Reasoning atoms', caption: 'Truth-grounded' },
+  { value: '99.6%', label: 'Atom verification', caption: 'Atlas pass rate' },
 ];
 ---
 
-<section
-  class="relative overflow-hidden border-b border-[var(--border)]"
->
-  <div class="absolute inset-0 hero-glow pointer-events-none" aria-hidden="true"></div>
+<section class="relative overflow-hidden border-b border-[var(--border)]">
+  <!-- Vibrant animated mesh background -->
+  <div class="mesh-bg" aria-hidden="true"></div>
   <DotGrid variant="sparse" fade="radial" />
 
   <div
-    class="relative max-w-5xl mx-auto px-5 sm:px-8 pt-14 pb-16 sm:pt-20 sm:pb-24"
+    class="relative max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-20 sm:pt-24 sm:pb-28"
   >
-    <div class="max-w-3xl">
-      <div class="fade-up mb-6">
-        <StatusPill>
-          Currently shipping a Tuxedo&#8202;&rarr;&#8202;gRPC framework across Three UK and Three Ireland
-        </StatusPill>
+    <div
+      class="grid lg:grid-cols-[minmax(0,1fr)_auto] gap-10 lg:gap-16 items-center"
+    >
+      <div class="max-w-3xl">
+        <div class="fade-up mb-6">
+          <StatusPill>
+            Currently shipping a Tuxedo&#8202;&rarr;&#8202;gRPC framework across
+            Three UK and Three Ireland
+          </StatusPill>
+        </div>
+
+        <p
+          class="fade-up text-xs sm:text-sm text-[var(--fg-subtle)] uppercase tracking-[0.2em] font-medium mb-4"
+        >
+          Software Developer &middot; Amdocs &middot; Gurgaon, India
+        </p>
+
+        <h1 class="fade-up display-1 mb-6">
+          Hi, I&rsquo;m <span class="gradient-text">Ashutosh Modi</span>.
+          <br class="hidden sm:block" />
+          I build platform infrastructure for Tier-1 telecom carriers.
+        </h1>
+
+        <p
+          class="fade-up-delay-1 text-lg sm:text-xl text-[var(--fg-muted)] leading-relaxed mb-8 max-w-2xl"
+        >
+          A Tuxedo&#8202;&rarr;&#8202;gRPC migration framework rolling out
+          across CK Hutchison&rsquo;s Three UK and Three Ireland. An AI
+          knowledge engine over an 18M-line legacy backend. Parser-driven
+          tooling that turns runtime defects into compile-time errors.
+        </p>
+
+        <div class="fade-up-delay-2 flex flex-wrap items-center gap-3 mb-10">
+          <a href="/resume.pdf" class="btn-cta btn-cta-primary">
+            <svg
+              aria-hidden="true"
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 3v12" />
+              <path d="m6 9 6 6 6-6" />
+              <path d="M5 21h14" />
+            </svg>
+            Get my resume
+          </a>
+          <a href="#case-studies" class="btn-cta btn-cta-secondary">
+            See my work
+            <svg
+              aria-hidden="true"
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14" />
+              <path d="m13 5 7 7-7 7" />
+            </svg>
+          </a>
+          <a
+            href="https://www.linkedin.com/in/ashutosh94g/"
+            target="_blank"
+            rel="noopener"
+            class="btn-cta btn-cta-secondary"
+            aria-label="LinkedIn"
+          >
+            <svg
+              aria-hidden="true"
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.72C24 .77 23.21 0 22.23 0z"
+              />
+            </svg>
+            LinkedIn
+          </a>
+          <a
+            href="https://github.com/ashutosh94g"
+            target="_blank"
+            rel="noopener"
+            class="btn-cta btn-cta-secondary"
+            aria-label="GitHub"
+          >
+            <svg
+              aria-hidden="true"
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.97c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.27-1.69-1.27-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.76 2.69 1.25 3.34.96.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.27-5.24-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.18a10.86 10.86 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.58.23 2.75.11 3.04.74.8 1.18 1.82 1.18 3.07 0 4.4-2.69 5.36-5.25 5.65.41.36.78 1.05.78 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"
+              />
+            </svg>
+            GitHub
+          </a>
+        </div>
+
+        <p class="fade-up-delay-2 text-sm text-[var(--fg-subtle)]">
+          <a
+            href="mailto:ashutosh94g@gmail.com"
+            class="text-[var(--fg-muted)] hover:text-[var(--fg)]"
+            >ashutosh94g@gmail.com</a
+          >
+          &nbsp;·&nbsp; Open to senior backend &amp; platform roles · India / EU
+          / remote
+        </p>
       </div>
 
-      <p
-        class="fade-up text-xs sm:text-sm text-[var(--fg-subtle)] uppercase tracking-[0.18em] font-medium mb-5"
+      <div
+        class="fade-up-delay-3 hidden md:flex justify-center items-center"
       >
-        Software Developer &middot; Amdocs &middot; Gurgaon, India
-      </p>
-
-      <h1
-        class="fade-up font-serif text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] font-semibold tracking-tight leading-[1.04] mb-7"
-      >
-        I build <span class="gradient-text">platform infrastructure</span> for
-        Tier-1 telecom carriers.
-      </h1>
-
-      <p
-        class="fade-up-delay-1 text-lg sm:text-xl text-[var(--fg-muted)] leading-relaxed mb-9 max-w-2xl"
-      >
-        A Tuxedo&#8202;&rarr;&#8202;gRPC migration framework rolling out across CK
-        Hutchison's Three UK and Three Ireland. An AI knowledge engine over an
-        18M-line legacy backend. Parser-driven tooling that turns runtime defects
-        into compile-time errors.
-      </p>
-
-      <div class="fade-up-delay-2 flex flex-wrap gap-2.5 mb-12">
-        {
-          social.map((s) => (
-            <a
-              href={s.href}
-              {...(s.external ? { target: '_blank', rel: 'noopener' } : {})}
-              class={
-                s.primary
-                  ? 'inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[var(--color-accent-600)] text-white no-underline font-medium hover:bg-[var(--color-accent-700)] hover:-translate-y-px transition-all shadow-[0_8px_20px_-8px_rgba(79,70,229,0.6)]'
-                  : 'inline-flex items-center gap-2 px-4 py-2 rounded-md border border-[var(--border-strong)] bg-[var(--bg-elev)]/60 backdrop-blur text-[var(--fg)] no-underline font-medium hover:bg-[var(--bg-elev)] hover:border-[var(--color-accent-500)]/40 transition-colors'
-              }
-            >
-              {s.label}
-              {s.external && (
-                <svg
-                  aria-hidden="true"
-                  class="w-3.5 h-3.5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M7 17 17 7M8 7h9v9" />
-                </svg>
-              )}
-            </a>
-          ))
-        }
+        <Avatar size={240} />
       </div>
     </div>
 
-    <div class="fade-up-delay-3 max-w-3xl">
-      <StatGrid stats={stats} cols={4} />
+    <!-- Bigger, more colorful KPI strip -->
+    <div
+      class="fade-up-delay-3 mt-14 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+    >
+      {
+        stats.map((s, i) => (
+          <div
+            class={
+              'relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)]/85 backdrop-blur-sm px-5 py-5 sm:px-6 sm:py-6 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)] ' +
+              (i === 0
+                ? 'shadow-glow-indigo'
+                : i === 1
+                  ? 'shadow-glow-amber'
+                  : i === 2
+                    ? 'shadow-glow-pink'
+                    : 'shadow-glow-emerald')
+            }
+            style={
+              i === 0
+                ? '--accent-from:#6366f1; --accent-to:#8b5cf6;'
+                : i === 1
+                  ? '--accent-from:#f59e0b; --accent-to:#f97316;'
+                  : i === 2
+                    ? '--accent-from:#ec4899; --accent-to:#a855f7;'
+                    : '--accent-from:#10b981; --accent-to:#14b8a6;'
+            }
+          >
+            <span
+              class="absolute top-0 left-0 right-0 h-[3px] accent-stripe"
+              aria-hidden="true"
+            />
+            <div class="kpi-number mb-1">{s.value}</div>
+            <div class="text-sm font-medium text-[var(--fg)] mb-0.5">{s.label}</div>
+            <div class="text-xs text-[var(--fg-subtle)]">{s.caption}</div>
+          </div>
+        ))
+      }
     </div>
   </div>
 </section>
+
+<style>
+  .shadow-glow-indigo  { box-shadow: var(--shadow-glow-indigo); }
+  .shadow-glow-amber   { box-shadow: var(--shadow-glow-amber); }
+  .shadow-glow-emerald { box-shadow: var(--shadow-glow-emerald); }
+  .shadow-glow-pink    { box-shadow: var(--shadow-glow-pink); }
+</style>

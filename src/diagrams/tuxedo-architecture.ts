@@ -1,6 +1,6 @@
 export const tuxedoArchitectureMermaid = `flowchart LR
     legacyClients["Legacy Tuxedo<br/>clients (C / PowerBuilder)"]
-    shim["Protocol Shim<br/>flat buffer &harr; Protobuf"]
+    shim["Protocol Shim<br/>flat buffer ↔ Protobuf"]
     haproxy["HAProxy<br/>front door"]
     grpcServices["gRPC Services<br/>any language"]
     consul["Consul<br/>service discovery"]

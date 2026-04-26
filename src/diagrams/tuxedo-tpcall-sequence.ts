@@ -6,7 +6,7 @@ export const tuxedoTpcallSequenceMermaid = `sequenceDiagram
     participant Svc as gRPC Service
 
     Client->>Shim: tpcall("CUSTOMER.GET_MEMO", FBuffer)
-    Note right of Shim: Lex/Yacc-generated codec<br/>flat buffer &rarr; Protobuf
+    Note right of Shim: Lex/Yacc-generated codec<br/>flat buffer to Protobuf
     Shim->>Shim: Encode flat buffer to<br/>customer.GetMemoRequest
     Shim->>LB: gRPC unary call<br/>(routing key = service name)
     LB-->>Svc: forward to healthy<br/>backend (round-robin)

@@ -1,6 +1,6 @@
 export const atlasPipelineMermaid = `flowchart LR
     subgraph Phase1["Phase 1\n· Architecture ·"]
-      arch["Map system into<br/>building blocks &amp; layers"]
+      arch["Map system into<br/>building blocks & layers"]
     end
     subgraph Phase2["Phase 2\n· Raw extraction ·"]
       raw["Deterministic scripts<br/>(0 AI tokens)"]
@@ -11,10 +11,10 @@ export const atlasPipelineMermaid = `flowchart LR
       L7["L7 — Forensics"]
     end
     subgraph Phase4["Phase 4\n· Reasoning atoms ·"]
-      atoms["1,200+ atoms<br/>9 types &middot; 6 tags"]
+      atoms["1,200+ atoms<br/>9 types · 6 tags"]
     end
     subgraph Phase5["Phase 5\n· CR pipeline ·"]
-      cr["CR &rarr; HLD &rarr; LLD<br/>&rarr; impact &rarr; tests"]
+      cr["CR → HLD → LLD<br/>→ impact → tests"]
     end
 
     src["Legacy backend<br/>~18M lines<br/>C / Pro*C / shell"] --> Phase1

@@ -64,11 +64,30 @@
     var(--color-accent-500),
     transparent
   );
+  /* multi-color animated mesh used behind the hero */
+  --mesh-1: #6366f1;  /* indigo  */
+  --mesh-2: #8b5cf6;  /* violet  */
+  --mesh-3: #ec4899;  /* pink    */
+  --mesh-4: #06b6d4;  /* cyan    */
+  --mesh-5: #f59e0b;  /* amber   */
+  --mesh-alpha: 0.32;
 
   --shadow-card: 0 1px 0 0 rgba(15, 23, 42, 0.04),
     0 12px 32px -16px rgba(15, 23, 42, 0.12);
   --shadow-card-hover: 0 1px 0 0 rgba(15, 23, 42, 0.06),
     0 24px 48px -20px rgba(15, 23, 42, 0.18);
+  --shadow-glow-indigo:
+    0 22px 50px -22px rgba(99, 102, 241, 0.55),
+    0 8px 20px -10px rgba(99, 102, 241, 0.35);
+  --shadow-glow-amber:
+    0 22px 50px -22px rgba(245, 158, 11, 0.55),
+    0 8px 20px -10px rgba(245, 158, 11, 0.35);
+  --shadow-glow-emerald:
+    0 22px 50px -22px rgba(16, 185, 129, 0.55),
+    0 8px 20px -10px rgba(16, 185, 129, 0.35);
+  --shadow-glow-pink:
+    0 22px 50px -22px rgba(236, 72, 153, 0.55),
+    0 8px 20px -10px rgba(236, 72, 153, 0.35);
 
   --dot-color: rgba(15, 23, 42, 0.07);
   --dot-color-strong: rgba(15, 23, 42, 0.12);
@@ -102,11 +121,24 @@
     var(--color-accent-400),
     transparent
   );
+  --mesh-alpha: 0.42;
 
   --shadow-card: 0 1px 0 0 rgba(255, 255, 255, 0.02),
     0 16px 36px -20px rgba(0, 0, 0, 0.5);
   --shadow-card-hover: 0 1px 0 0 rgba(255, 255, 255, 0.03),
     0 28px 56px -24px rgba(0, 0, 0, 0.6);
+  --shadow-glow-indigo:
+    0 28px 60px -22px rgba(129, 140, 248, 0.55),
+    0 10px 24px -12px rgba(129, 140, 248, 0.45);
+  --shadow-glow-amber:
+    0 28px 60px -22px rgba(251, 191, 36, 0.55),
+    0 10px 24px -12px rgba(251, 191, 36, 0.45);
+  --shadow-glow-emerald:
+    0 28px 60px -22px rgba(52, 211, 153, 0.55),
+    0 10px 24px -12px rgba(52, 211, 153, 0.45);
+  --shadow-glow-pink:
+    0 28px 60px -22px rgba(244, 114, 182, 0.55),
+    0 10px 24px -12px rgba(244, 114, 182, 0.45);
 
   --dot-color: rgba(226, 232, 240, 0.05);
   --dot-color-strong: rgba(226, 232, 240, 0.09);
@@ -227,9 +259,169 @@ a:hover {
 
 .gradient-text {
   background: var(--gradient-text);
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: gradient-shift 8s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Animated multi-color mesh used behind the hero. Pure CSS, GPU-accelerated. */
+.mesh-bg {
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+  background-image:
+    radial-gradient(closest-side at 18% 22%, color-mix(in oklab, var(--mesh-1) calc(var(--mesh-alpha) * 100%), transparent), transparent 70%),
+    radial-gradient(closest-side at 82% 18%, color-mix(in oklab, var(--mesh-2) calc(var(--mesh-alpha) * 100%), transparent), transparent 70%),
+    radial-gradient(closest-side at 70% 78%, color-mix(in oklab, var(--mesh-3) calc(var(--mesh-alpha) * 100%), transparent), transparent 70%),
+    radial-gradient(closest-side at 22% 80%, color-mix(in oklab, var(--mesh-4) calc(var(--mesh-alpha) * 100%), transparent), transparent 70%),
+    radial-gradient(closest-side at 50% 50%, color-mix(in oklab, var(--mesh-5) calc(var(--mesh-alpha) * 60%), transparent), transparent 70%);
+  filter: blur(60px) saturate(1.05);
+  animation: mesh-drift 22s ease-in-out infinite alternate;
+  opacity: 0.95;
+}
+
+@keyframes mesh-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2%, -1.5%, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(-1%, 2%, 0) scale(1.03);
+  }
+}
+
+/* Glow variants for high-impact cards / CTAs */
+.glow-indigo { box-shadow: var(--shadow-glow-indigo); }
+.glow-amber  { box-shadow: var(--shadow-glow-amber);  }
+.glow-emerald { box-shadow: var(--shadow-glow-emerald); }
+.glow-pink   { box-shadow: var(--shadow-glow-pink);   }
+
+/* Larger, more impactful display heading scale used on the home page. */
+.display-1 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 6.4vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.display-2 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(2rem, 4.4vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.018em;
+}
+
+/* Big mono number for headline KPIs, with subtle gradient. */
+.kpi-number {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: clamp(2.25rem, 3.8vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, var(--fg) 30%, color-mix(in oklab, var(--fg) 65%, transparent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+[data-theme="dark"] .kpi-number {
+  background: linear-gradient(180deg, var(--fg) 35%, color-mix(in oklab, var(--fg) 60%, transparent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Big CTA button used in the hero + resume section. */
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.975rem;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.btn-cta-primary {
+  background: linear-gradient(120deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+  background-size: 180% 100%;
+  background-position: 0% 50%;
+  color: #ffffff;
+  box-shadow: var(--shadow-glow-indigo);
+}
+
+.btn-cta-primary:hover {
+  transform: translateY(-1px);
+  background-position: 100% 50%;
+  color: #ffffff;
+}
+
+.btn-cta-secondary {
+  background: var(--bg-elev);
+  color: var(--fg);
+  border: 1px solid var(--border-strong);
+}
+
+.btn-cta-secondary:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-accent-500);
+  color: var(--fg);
+}
+
+/* Tech-stack chip with subtle gradient sheen on hover. */
+.tech-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--fg);
+  text-decoration: none;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-chip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, color-mix(in oklab, var(--chip-color, var(--color-accent-500)) 18%, transparent) 50%, transparent 70%);
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+
+.tech-chip:hover {
+  transform: translateY(-1px);
+  border-color: var(--chip-color, var(--color-accent-500));
+}
+
+.tech-chip:hover::before { opacity: 1; }
+
+.tech-chip > .tech-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--chip-color, var(--color-accent-500));
+  box-shadow: 0 0 10px color-mix(in oklab, var(--chip-color, var(--color-accent-500)) 65%, transparent);
+  flex-shrink: 0;
 }
 
 .accent-rule {

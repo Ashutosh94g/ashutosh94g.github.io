@@ -23,7 +23,7 @@ export const atlasAtomTaxonomyMermaid = `flowchart TB
     root --> behavioral
     root --> contextual
 
-    tags["Enrichment tags<br/>confidence &middot; provenance &middot; freshness<br/>blast-radius &middot; risk &middot; reviewer"]
+    tags["Enrichment tags<br/>confidence · provenance · freshness<br/>blast-radius · risk · reviewer"]
     structural --- tags
     behavioral --- tags
     contextual --- tags

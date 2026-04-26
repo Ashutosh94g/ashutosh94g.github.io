@@ -1,0 +1,151 @@
+---
+/**
+ * Awards & recognition strip for the homepage.
+ *
+ * Five glow-cards with a serif title, when/where line, and an SVG glyph.
+ * The colour rotates around the brand palette so the whole strip reads as
+ * "the page has shape and personality" without being noisy.
+ */
+
+interface Award {
+  title: string;
+  when: string;
+  where: string;
+  blurb: string;
+  glow: 'indigo' | 'amber' | 'emerald' | 'pink';
+  icon: 'trophy' | 'star' | 'award' | 'sparkle';
+}
+
+const awards: Award[] = [
+  {
+    title: 'Pinnacle Performer',
+    when: 'Feb 2026',
+    where: 'Amdocs',
+    blurb:
+      'Top-tier annual performance award. Recognition for the Tuxedo→gRPC framework rollout and Atlas knowledge engine.',
+    glow: 'amber',
+    icon: 'trophy',
+  },
+  {
+    title: 'Employee of the Month',
+    when: 'Feb 2025 · Feb 2026',
+    where: 'Amdocs',
+    blurb:
+      'Awarded twice in two years for delivering compiler-driven tooling, the WebFOCUS auto-converter, and platform contributions.',
+    glow: 'indigo',
+    icon: 'star',
+  },
+  {
+    title: 'Placement Head',
+    when: '2021 – 2022',
+    where: 'GNDU',
+    blurb:
+      'Led the placement cell at university — coordinated company outreach, mock interviews, and the placement drive for the graduating cohort.',
+    glow: 'emerald',
+    icon: 'award',
+  },
+  {
+    title: 'Google Workshop winner',
+    when: '2020',
+    where: 'Google for Education',
+    blurb:
+      'Selected as a winner in a Google-run workshop on cloud-native applications during undergrad.',
+    glow: 'pink',
+    icon: 'sparkle',
+  },
+];
+
+const iconPath: Record<Award['icon'], string> = {
+  trophy:
+    'M6 9V4h12v5a6 6 0 0 1-12 0Z M4 4h2v2a2 2 0 0 1-2 2 M20 4h-2v2a2 2 0 0 0 2 2 M9 21h6 M12 16v5',
+  star:
+    'M12 2 14.6 9 22 9.6 16.2 14.4 18 22 12 18 6 22 7.8 14.4 2 9.6 9.4 9 Z',
+  award:
+    'M8 21l4-2 4 2-1-7 M12 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z',
+  sparkle:
+    'M12 2v4 M12 18v4 M2 12h4 M18 12h4 M5 5l3 3 M16 16l3 3 M5 19l3-3 M16 8l3-3',
+};
+---
+
+<section
+  id="awards"
+  class="relative max-w-5xl mx-auto px-5 sm:px-8 py-20 border-t border-[var(--border)]"
+  aria-labelledby="awards-heading"
+>
+  <header class="max-w-3xl mb-10">
+    <p
+      class="text-xs uppercase tracking-[0.2em] font-medium text-[var(--color-accent-600)] dark:text-[var(--color-accent-400)] mb-3"
+    >
+      Recognition
+    </p>
+    <h2 id="awards-heading" class="display-2 mb-3">
+      Awards &amp; standout moments.
+    </h2>
+    <p class="text-lg text-[var(--fg-muted)] leading-relaxed max-w-2xl">
+      A few public confirmations that the work landed &mdash; from the
+      day-job, from university, and from external programs.
+    </p>
+  </header>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      awards.map((a) => (
+        <article
+          class={`relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-6 hover:-translate-y-1 transition-transform glow-${a.glow}`}
+          style={
+            a.glow === 'indigo'
+              ? '--accent-from:#6366f1; --accent-to:#8b5cf6;'
+              : a.glow === 'amber'
+                ? '--accent-from:#f59e0b; --accent-to:#f97316;'
+                : a.glow === 'emerald'
+                  ? '--accent-from:#10b981; --accent-to:#14b8a6;'
+                  : '--accent-from:#ec4899; --accent-to:#a855f7;'
+          }
+        >
+          <span
+            class="absolute top-0 left-0 right-0 h-[3px] accent-stripe"
+            aria-hidden="true"
+          />
+
+          <div
+            class="w-11 h-11 rounded-xl flex items-center justify-center mb-4 text-white"
+            style={
+              a.glow === 'indigo'
+                ? 'background: linear-gradient(135deg, #6366f1, #8b5cf6);'
+                : a.glow === 'amber'
+                  ? 'background: linear-gradient(135deg, #f59e0b, #f97316);'
+                  : a.glow === 'emerald'
+                    ? 'background: linear-gradient(135deg, #10b981, #14b8a6);'
+                    : 'background: linear-gradient(135deg, #ec4899, #a855f7);'
+            }
+            aria-hidden="true"
+          >
+            <svg
+              class="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              {iconPath[a.icon].split(' M').map((segment, i) => (
+                <path d={i === 0 ? segment : `M${segment}`} />
+              ))}
+            </svg>
+          </div>
+
+          <h3 class="font-serif text-lg font-semibold tracking-tight mb-1.5">
+            {a.title}
+          </h3>
+          <p class="text-xs uppercase tracking-[0.12em] text-[var(--fg-subtle)] mb-3">
+            {a.when} &middot; {a.where}
+          </p>
+          <p class="text-sm text-[var(--fg-muted)] leading-relaxed m-0">
+            {a.blurb}
+          </p>
+        </article>
+      ))
+    }
+  </div>
+</section>

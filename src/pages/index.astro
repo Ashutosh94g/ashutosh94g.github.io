@@ -6,6 +6,12 @@ import CaseStudyCard from '../components/CaseStudyCard.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import StatGrid from '../components/StatGrid.astro';
 import JsonLd from '../components/JsonLd.astro';
+import Mermaid from '../components/Mermaid.astro';
+import TechStack from '../components/TechStack.astro';
+import CareerTimeline from '../components/CareerTimeline.astro';
+import Awards from '../components/Awards.astro';
+import ResumeCTA from '../components/ResumeCTA.astro';
+import { overviewMermaid } from '../diagrams/overview';
 
 const studies = (await getCollection('caseStudies')).sort(
   (a, b) => a.data.order - b.data.order,
@@ -64,7 +70,7 @@ const personSchema = {
     'TIBCO WebFOCUS',
   ],
   description:
-    "Backend engineer at Amdocs working on Tier-1 telecom platform modernization, distributed systems, and an internal AI development platform.",
+    'Backend engineer at Amdocs working on Tier-1 telecom platform modernization, distributed systems, and an internal AI development platform.',
 };
 
 const websiteSchema = {
@@ -86,19 +92,18 @@ const headlineStats = [
     value: '500',
     suffix: '+',
     label: 'Scripts auto-converted',
-    caption: '48 hrs of hand-conversion to ~40 mins each',
+    caption: '48 hrs of hand-conversion \u2192 ~40 mins each',
   },
   {
     value: '1,200',
     suffix: '+',
     label: 'Reasoning atoms',
-    caption: 'Across 8 core processes, 99.6% truth-grounded',
+    caption: 'Across 8 core processes; 99.6% truth-grounded',
   },
   {
-    value: '80',
-    suffix: '%',
-    label: 'Defects caught at build',
-    caption: 'Compile-time gate over a 15-year-old C codebase',
+    value: '2',
+    label: 'Tier-1 carriers',
+    caption: 'Three UK + Three Ireland in production rollout',
   },
 ];
 ---
@@ -108,11 +113,42 @@ const headlineStats = [
     <JsonLd schema={personSchema} />
     <JsonLd schema={websiteSchema} />
   </Fragment>
+
   <Hero />
 
+  <!-- At-a-glance overview diagram -->
+  <section
+    id="at-a-glance"
+    class="relative max-w-5xl mx-auto px-5 sm:px-8 pt-20 pb-4 scroll-mt-20"
+    aria-labelledby="at-a-glance-heading"
+  >
+    <header class="max-w-3xl mb-8">
+      <p
+        class="text-xs uppercase tracking-[0.2em] font-medium text-[var(--color-accent-600)] dark:text-[var(--color-accent-400)] mb-3"
+      >
+        The shape of the work
+      </p>
+      <h2 id="at-a-glance-heading" class="display-2 mb-3">
+        From a 20-year-old telecom backend to a modern platform &mdash; with a
+        knowledge layer in between.
+      </h2>
+      <p class="text-lg text-[var(--fg-muted)] leading-relaxed max-w-2xl">
+        Three case studies, one diagram. Legacy on the left, what I build on
+        the right, and the layer that makes the modernisation safe to run in
+        between.
+      </p>
+    </header>
+
+    <Mermaid
+      code={overviewMermaid}
+      caption="A 20-year-old C / Pro*C / shell backend, the platform layer that lifts it into gRPC and modern analytics, and the Atlas knowledge engine that makes the whole transformation tractable."
+    />
+  </section>
+
+  <!-- Case studies -->
   <section
     id="case-studies"
-    class="relative max-w-5xl mx-auto px-5 sm:px-8 pt-16 pb-12 scroll-mt-20"
+    class="relative max-w-5xl mx-auto px-5 sm:px-8 pt-20 pb-16 scroll-mt-20"
     aria-labelledby="case-studies-heading"
   >
     <header class="max-w-3xl mb-10">
@@ -121,16 +157,13 @@ const headlineStats = [
       >
         Selected work
       </p>
-      <h2
-        id="case-studies-heading"
-        class="font-serif text-3xl sm:text-4xl font-semibold tracking-tight mb-3"
-      >
-        Three pieces of work that don't fit on a one-page resume.
+      <h2 id="case-studies-heading" class="display-2 mb-3">
+        Three pieces of work that don&rsquo;t fit on a one-page resume.
       </h2>
       <p class="text-lg text-[var(--fg-muted)] leading-relaxed max-w-2xl">
-        Each one digs into the problem, the mechanism, and what shipped &mdash;
-        with the architecture diagrams, the measured numbers, and what stayed
-        with me afterwards.
+        Each one digs into the problem, the mechanism, and what shipped
+        &mdash; with the architecture diagrams, the measured numbers, and what
+        stayed with me afterwards.
       </p>
     </header>
 
@@ -156,9 +189,13 @@ const headlineStats = [
     </BentoGrid>
   </section>
 
+  <!-- Tech stack -->
+  <TechStack />
+
+  <!-- Selected numbers -->
   <section
     id="numbers"
-    class="relative max-w-5xl mx-auto px-5 sm:px-8 py-16 border-t border-[var(--border)] mt-8"
+    class="relative max-w-5xl mx-auto px-5 sm:px-8 py-20 border-t border-[var(--border)]"
     aria-labelledby="numbers-heading"
   >
     <header class="max-w-3xl mb-10">
@@ -167,33 +204,50 @@ const headlineStats = [
       >
         Selected numbers
       </p>
-      <h2
-        id="numbers-heading"
-        class="font-serif text-3xl sm:text-4xl font-semibold tracking-tight mb-3"
-      >
+      <h2 id="numbers-heading" class="display-2 mb-3">
         Aggregate impact, with the receipts.
       </h2>
       <p class="text-lg text-[var(--fg-muted)] leading-relaxed max-w-2xl">
-        Numbers from the case studies, side-by-side. Architecture and aggregate
-        metrics are on the record; specific client names, internal service names,
-        and dollar values stay out. The case studies link the receipts.
+        Numbers from the case studies, side-by-side. Architecture and
+        aggregate metrics are on the record; specific client names, internal
+        service names, and dollar values stay out. The case studies link the
+        receipts.
       </p>
     </header>
 
     <div
-      class="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-6 sm:p-8 shadow-[var(--shadow-card)] relative overflow-hidden"
+      class="rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] p-6 sm:p-10 shadow-[var(--shadow-card)] relative overflow-hidden"
     >
       <div
-        class="absolute inset-0 dot-grid opacity-60 pointer-events-none"
+        class="absolute inset-0 dot-grid opacity-50 pointer-events-none"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        class="absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-30 blur-3xl pointer-events-none"
+        style="background: radial-gradient(circle, #6366f1, transparent 70%);"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full opacity-25 blur-3xl pointer-events-none"
+        style="background: radial-gradient(circle, #ec4899, transparent 70%);"
         aria-hidden="true"
       >
       </div>
       <div class="relative">
-        <StatGrid stats={headlineStats} cols={4} />
+        <StatGrid stats={headlineStats} cols={4} size="xl" />
       </div>
     </div>
   </section>
 
+  <!-- Career timeline -->
+  <CareerTimeline />
+
+  <!-- Awards -->
+  <Awards />
+
+  <!-- Now teaser (smaller, link card) -->
   <section
     id="now-teaser"
     class="relative max-w-5xl mx-auto px-5 sm:px-8 py-12"
@@ -201,21 +255,21 @@ const headlineStats = [
   >
     <a
       href="/now/"
-      class="group block rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] no-underline overflow-hidden p-6 sm:p-8 hover:border-[var(--border-strong)] transition-colors shadow-[var(--shadow-card)]"
+      class="group block rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] no-underline overflow-hidden p-6 sm:p-8 hover:border-[var(--border-strong)] hover:shadow-[var(--shadow-card-hover)] transition-all shadow-[var(--shadow-card)]"
     >
       <div class="flex items-start justify-between gap-6 flex-wrap">
         <div class="max-w-2xl">
           <p
             class="text-xs uppercase tracking-[0.2em] font-medium text-[var(--color-accent-600)] dark:text-[var(--color-accent-400)] mb-3"
           >
-            What I'm doing now
+            What I&rsquo;m doing now
           </p>
           <h2
             id="now-teaser-heading"
             class="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-[var(--fg)] mb-3 group-hover:text-[var(--link)] transition-colors"
           >
-            Rolling out gRPC across two carriers, expanding Atlas's CR pipeline,
-            and writing more.
+            Rolling out gRPC across two carriers, expanding Atlas&rsquo;s CR
+            pipeline, and writing more.
           </h2>
           <p class="text-[var(--fg-muted)] leading-relaxed m-0">
             A short snapshot of current focus, refreshed when it shifts.
@@ -239,9 +293,13 @@ const headlineStats = [
     </a>
   </section>
 
+  <!-- Big resume CTA -->
+  <ResumeCTA />
+
+  <!-- Elsewhere (compact link strip) -->
   <section
     id="elsewhere"
-    class="max-w-5xl mx-auto px-5 sm:px-8 py-16 border-t border-[var(--border)] mt-4"
+    class="max-w-5xl mx-auto px-5 sm:px-8 py-16 border-t border-[var(--border)]"
     aria-labelledby="elsewhere-heading"
   >
     <header class="max-w-3xl mb-8">
@@ -250,10 +308,7 @@ const headlineStats = [
       >
         Elsewhere
       </p>
-      <h2
-        id="elsewhere-heading"
-        class="font-serif text-3xl sm:text-4xl font-semibold tracking-tight mb-3"
-      >
+      <h2 id="elsewhere-heading" class="display-2 mb-3">
         Best places to find me.
       </h2>
       <p class="text-[var(--fg-muted)] leading-relaxed max-w-2xl">
@@ -267,7 +322,7 @@ const headlineStats = [
           href="https://github.com/ashutosh94g"
           target="_blank"
           rel="noopener"
-          class="flex items-center justify-between p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+          class="flex items-center justify-between p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] hover:-translate-y-0.5 transition-all"
         >
           <span>
             <span
@@ -284,7 +339,7 @@ const headlineStats = [
           href="https://www.linkedin.com/in/ashutosh94g/"
           target="_blank"
           rel="noopener"
-          class="flex items-center justify-between p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+          class="flex items-center justify-between p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] hover:-translate-y-0.5 transition-all"
         >
           <span>
             <span
@@ -299,7 +354,7 @@ const headlineStats = [
       <li>
         <a
           href="mailto:ashutosh94g@gmail.com"
-          class="flex items-center justify-between p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+          class="flex items-center justify-between p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] hover:-translate-y-0.5 transition-all"
         >
           <span>
             <span
@@ -314,7 +369,7 @@ const headlineStats = [
       <li>
         <a
           href="/resume.pdf"
-          class="flex items-center justify-between p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+          class="flex items-center justify-between p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] hover:-translate-y-0.5 transition-all"
         >
           <span>
             <span

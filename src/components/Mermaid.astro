@@ -134,11 +134,27 @@ const id = `mermaid-${Math.random().toString(36).slice(2, 10)}`;
     };
   }
 
+  let renderToken = 0;
+
   async function renderAll() {
     const containers = document.querySelectorAll<HTMLElement>('.mermaid-container');
     if (!containers.length) return;
 
-    const { default: mermaid } = await import('mermaid');
+    const myToken = ++renderToken;
+
+    let mermaid;
+    try {
+      ({ default: mermaid } = await import('mermaid'));
+    } catch (err) {
+      console.error('Mermaid module failed to load', err);
+      for (const container of Array.from(containers)) {
+        const renderEl = container.querySelector<HTMLElement>('.mermaid-render');
+        if (renderEl)
+          renderEl.innerHTML =
+            '<pre class="text-sm text-[var(--fg-subtle)]">Diagram could not be loaded.</pre>';
+      }
+      return;
+    }
 
     const cfg = buildThemeConfig();
     mermaid.initialize({
@@ -146,13 +162,13 @@ const id = `mermaid-${Math.random().toString(36).slice(2, 10)}`;
       theme: cfg.theme,
       themeVariables: cfg.themeVariables,
       fontFamily: cfg.fontFamily,
-      flowchart: { curve: 'basis', padding: 14, useMaxWidth: true },
+      flowchart: { curve: 'basis', padding: 14, useMaxWidth: true, htmlLabels: true },
       sequence: { useMaxWidth: true, mirrorActors: false, actorMargin: 60 },
-      securityLevel: 'strict',
+      securityLevel: 'loose',
     });
-    initialized = true;
 
     for (const container of Array.from(containers)) {
+      if (myToken !== renderToken) return;
       const id =
         container.dataset.mermaidId ?? `m-${Math.random().toString(36).slice(2)}`;
       const sourceEl = container.querySelector<HTMLElement>('.mermaid-source');
@@ -160,7 +176,8 @@ const id = `mermaid-${Math.random().toString(36).slice(2, 10)}`;
       if (!sourceEl || !renderEl) continue;
       const source = sourceEl.textContent ?? '';
       try {
-        const { svg } = await mermaid.render(`${id}-svg`, source);
+        const { svg } = await mermaid.render(`${id}-svg-${myToken}`, source);
+        if (myToken !== renderToken) return;
         renderEl.innerHTML = svg;
       } catch (err) {
         renderEl.innerHTML =
@@ -170,22 +187,19 @@ const id = `mermaid-${Math.random().toString(36).slice(2, 10)}`;
     }
   }
 
-  function rerender() {
-    renderAll();
+  let rerenderTimer: ReturnType<typeof setTimeout> | null = null;
+  function scheduleRerender() {
+    if (rerenderTimer) clearTimeout(rerenderTimer);
+    rerenderTimer = setTimeout(() => renderAll(), 60);
   }
 
-  rerender();
-
-  document.addEventListener('astro:after-swap', () => {
-    initialized = false;
-    rerender();
-  });
+  scheduleRerender();
+  document.addEventListener('astro:after-swap', scheduleRerender);
 
   const observer = new MutationObserver((mutations) => {
     for (const m of mutations) {
       if (m.attributeName === 'data-theme') {
-        initialized = false;
-        rerender();
+        scheduleRerender();
         break;
       }
     }
