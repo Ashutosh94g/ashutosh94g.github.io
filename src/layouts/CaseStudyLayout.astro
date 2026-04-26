@@ -1,0 +1,124 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Mermaid from '../components/Mermaid.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { tuxedoArchitectureMermaid } from '../diagrams/tuxedo-architecture';
+
+interface Props {
+  title: string;
+  summary: string;
+  role: string;
+  dates: string;
+  tags: string[];
+  accent?: 'indigo' | 'amber' | 'emerald';
+  diagram?: 'mermaid-tuxedo' | 'none';
+  ogImage?: string;
+}
+
+const {
+  title,
+  summary,
+  role,
+  dates,
+  tags,
+  accent = 'indigo',
+  diagram = 'none',
+  ogImage,
+} = Astro.props;
+
+const SITE_URL = 'https://ashutosh94g.github.io/';
+const articleUrl = new URL(Astro.url.pathname, SITE_URL).toString();
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: title,
+  description: summary,
+  url: articleUrl,
+  image: new URL(ogImage ?? '/og/default.png', SITE_URL).toString(),
+  author: {
+    '@type': 'Person',
+    name: 'Ashutosh Modi',
+    url: SITE_URL,
+  },
+  keywords: tags.join(', '),
+  inLanguage: 'en-US',
+};
+
+const accentBg = {
+  indigo: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/20',
+  amber: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20',
+  emerald:
+    'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20',
+}[accent];
+---
+
+<BaseLayout
+  title={title}
+  description={summary}
+  pageType="article"
+  ogImage={ogImage ?? '/og/default.png'}
+>
+  <Fragment slot="head">
+    <JsonLd schema={articleSchema} />
+  </Fragment>
+
+  <article class="max-w-3xl mx-auto px-5 sm:px-8 pt-12 pb-16">
+    <header class="mb-10 fade-up">
+      <p class="text-sm text-[var(--fg-subtle)] mb-3 flex items-center gap-2 flex-wrap">
+        <a href="/#case-studies" class="no-underline hover:underline text-[var(--fg-muted)]"
+          >Case studies</a
+        >
+        <span aria-hidden="true">/</span>
+        <span>{dates}</span>
+      </p>
+      <h1
+        class="font-serif text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.1] mb-5"
+      >
+        {title}
+      </h1>
+      <p class="text-lg text-[var(--fg-muted)] leading-relaxed mb-6">{summary}</p>
+      <div class="flex flex-wrap items-center gap-2">
+        <span
+          class={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full border ${accentBg}`}
+        >
+          {role}
+        </span>
+        {
+          tags.map((tag) => (
+            <span class="inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full border border-[var(--border)] text-[var(--fg-muted)]">
+              {tag}
+            </span>
+          ))
+        }
+      </div>
+    </header>
+
+    {
+      diagram === 'mermaid-tuxedo' && (
+        <Mermaid
+          code={tuxedoArchitectureMermaid}
+          caption="Runtime: legacy Tuxedo clients hit the protocol shim, which speaks gRPC to the polyglot service mesh. HAProxy fronts the mesh; Consul publishes service identity; Consul Template syncs HAProxy config; Nomad orchestrates. Kafka unlocks event-driven flows once the migration completes."
+        />
+      )
+    }
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    <hr class="my-12 border-[var(--border)]" />
+
+    <nav
+      class="flex flex-col sm:flex-row sm:justify-between gap-3 text-sm"
+      aria-label="Case study navigation"
+    >
+      <a href="/#case-studies" class="text-[var(--fg-muted)] hover:text-[var(--link)]"
+        >&larr; All case studies</a
+      >
+      <a href="/" class="text-[var(--fg-muted)] hover:text-[var(--link)]"
+        >Back home &rarr;</a
+      >
+    </nav>
+  </article>
+</BaseLayout>

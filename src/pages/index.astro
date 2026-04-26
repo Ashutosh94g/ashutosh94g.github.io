@@ -1,0 +1,198 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import CaseStudyCard from '../components/CaseStudyCard.astro';
+import JsonLd from '../components/JsonLd.astro';
+
+const studies = (await getCollection('caseStudies')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const SITE_URL = 'https://ashutosh94g.github.io/';
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Ashutosh Modi',
+  givenName: 'Ashutosh',
+  familyName: 'Modi',
+  url: SITE_URL,
+  image: `${SITE_URL}og/default.png`,
+  email: 'mailto:ashutosh94g@gmail.com',
+  jobTitle: 'Software Developer',
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Amdocs',
+    url: 'https://www.amdocs.com/',
+  },
+  homeLocation: {
+    '@type': 'Place',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Gurgaon',
+      addressRegion: 'Haryana',
+      addressCountry: 'IN',
+    },
+  },
+  sameAs: [
+    'https://github.com/ashutosh94g',
+    'https://www.linkedin.com/in/ashutosh94g/',
+  ],
+  knowsAbout: [
+    'gRPC',
+    'Protocol Buffers',
+    'Distributed Systems',
+    'Service Discovery',
+    'HAProxy',
+    'HashiCorp Consul',
+    'HashiCorp Nomad',
+    'Apache Kafka',
+    'Compilers',
+    'Lex/Yacc',
+    'C',
+    'C++',
+    'Python',
+    'Pandas',
+    'AI Development Platforms',
+    'Cursor',
+    'Knowledge Engineering',
+    'Telecom Backend Systems',
+    'Oracle Tuxedo',
+    'TIBCO WebFOCUS',
+  ],
+  description:
+    "Backend engineer at Amdocs working on Tier-1 telecom platform modernization, distributed systems, and an internal AI development platform.",
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Ashutosh Modi',
+  url: SITE_URL,
+  author: { '@id': `${SITE_URL}#person` },
+};
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <JsonLd schema={personSchema} />
+    <JsonLd schema={websiteSchema} />
+  </Fragment>
+  <Hero />
+
+  <section
+    id="case-studies"
+    class="max-w-3xl mx-auto px-5 sm:px-8 pb-12 scroll-mt-20"
+    aria-labelledby="case-studies-heading"
+  >
+    <header class="mb-8">
+      <h2
+        id="case-studies-heading"
+        class="font-serif text-2xl sm:text-3xl font-semibold tracking-tight mb-3"
+      >
+        Case studies
+      </h2>
+      <p class="text-[var(--fg-muted)] leading-relaxed max-w-2xl">
+        Three pieces of work that don't fit on a one-page resume. Each one digs into the
+        problem, the mechanism, and what shipped &mdash; with the architecture diagrams
+        and the lessons.
+      </p>
+    </header>
+
+    <div class="grid gap-5">
+      {
+        studies.map((study, i) => (
+          <CaseStudyCard
+            href={`/case-studies/${study.id}/`}
+            title={study.data.title}
+            summary={study.data.summary}
+            role={study.data.role}
+            dates={study.data.dates}
+            tags={study.data.tags}
+            accent={study.data.accent}
+            index={i + 1}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <section
+    id="elsewhere"
+    class="max-w-3xl mx-auto px-5 sm:px-8 py-16 border-t border-[var(--border)] mt-12"
+    aria-labelledby="elsewhere-heading"
+  >
+    <h2
+      id="elsewhere-heading"
+      class="font-serif text-2xl sm:text-3xl font-semibold tracking-tight mb-5"
+    >
+      Elsewhere
+    </h2>
+    <p class="text-[var(--fg-muted)] leading-relaxed mb-6 max-w-2xl">
+      Best places to reach me, and the latest version of my resume.
+    </p>
+    <ul class="grid gap-3 sm:grid-cols-2 list-none m-0 p-0">
+      <li>
+        <a
+          href="https://github.com/ashutosh94g"
+          target="_blank"
+          rel="noopener"
+          class="flex items-center justify-between p-4 rounded border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+        >
+          <span>
+            <span class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
+              >GitHub</span
+            >
+            <span class="text-base">github.com/ashutosh94g</span>
+          </span>
+          <span class="text-[var(--fg-muted)]" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+      <li>
+        <a
+          href="https://www.linkedin.com/in/ashutosh94g/"
+          target="_blank"
+          rel="noopener"
+          class="flex items-center justify-between p-4 rounded border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+        >
+          <span>
+            <span class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
+              >LinkedIn</span
+            >
+            <span class="text-base">in/ashutosh94g</span>
+          </span>
+          <span class="text-[var(--fg-muted)]" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+      <li>
+        <a
+          href="mailto:ashutosh94g@gmail.com"
+          class="flex items-center justify-between p-4 rounded border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+        >
+          <span>
+            <span class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
+              >Email</span
+            >
+            <span class="text-base">ashutosh94g@gmail.com</span>
+          </span>
+          <span class="text-[var(--fg-muted)]" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+      <li>
+        <a
+          href="/resume.pdf"
+          class="flex items-center justify-between p-4 rounded border border-[var(--border)] bg-[var(--bg-elev)] no-underline text-[var(--fg)] hover:border-[var(--border-strong)] transition-colors"
+        >
+          <span>
+            <span class="block text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-0.5"
+              >Resume</span
+            >
+            <span class="text-base">resume.pdf</span>
+          </span>
+          <span class="text-[var(--fg-muted)]" aria-hidden="true">&darr;</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+</BaseLayout>

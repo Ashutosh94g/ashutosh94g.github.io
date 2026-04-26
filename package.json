@@ -1,0 +1,31 @@
+{
+  "name": "ashutoshmodi-website",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Personal portfolio and case-study site for Ashutosh Modi",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "resume:sync": "node scripts/sync-resume.mjs",
+    "og:build": "node scripts/build-og.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^5.0.4",
+    "@astrojs/sitemap": "^3.7.2",
+    "@iconify-json/lucide": "^1.2.103",
+    "@tailwindcss/vite": "^4.2.4",
+    "astro": "^6.1.9",
+    "astro-expressive-code": "^0.41.7",
+    "astro-icon": "^1.1.5",
+    "mermaid": "^11.14.0",
+    "tailwindcss": "^4.2.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

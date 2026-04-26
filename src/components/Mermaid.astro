@@ -1,0 +1,96 @@
+---
+interface Props {
+  code: string;
+  caption?: string;
+}
+
+const { code, caption } = Astro.props;
+
+const id = `mermaid-${Math.random().toString(36).slice(2, 10)}`;
+---
+
+<figure class="my-8 not-prose">
+  <div
+    class="mermaid-container border border-[var(--border)] rounded-lg bg-[var(--bg-elev)] p-4 sm:p-6 overflow-x-auto"
+    data-mermaid-id={id}
+  >
+    <pre class="mermaid-source hidden">{code}</pre>
+    <div class="mermaid-render text-[var(--fg)]"></div>
+  </div>
+  {
+    caption && (
+      <figcaption class="mt-2 text-sm text-[var(--fg-subtle)] text-center">
+        {caption}
+      </figcaption>
+    )
+  }
+</figure>
+
+<script>
+  let initialized = false;
+
+  function getMermaidTheme(): 'default' | 'dark' {
+    return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default';
+  }
+
+  async function renderAll() {
+    const containers = document.querySelectorAll<HTMLElement>('.mermaid-container');
+    if (!containers.length) return;
+
+    const { default: mermaid } = await import('mermaid');
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: getMermaidTheme(),
+      themeVariables: {
+        fontFamily: 'Inter Variable, Inter, ui-sans-serif, system-ui, sans-serif',
+        fontSize: '14px',
+      },
+      flowchart: { curve: 'basis', padding: 12 },
+      securityLevel: 'strict',
+    });
+    initialized = true;
+
+    for (const container of Array.from(containers)) {
+      const id = container.dataset.mermaidId ?? `m-${Math.random().toString(36).slice(2)}`;
+      const sourceEl = container.querySelector<HTMLElement>('.mermaid-source');
+      const renderEl = container.querySelector<HTMLElement>('.mermaid-render');
+      if (!sourceEl || !renderEl) continue;
+      const source = sourceEl.textContent ?? '';
+      try {
+        const { svg } = await mermaid.render(`${id}-svg`, source);
+        renderEl.innerHTML = svg;
+      } catch (err) {
+        renderEl.innerHTML =
+          '<pre class="text-sm text-[var(--fg-subtle)]">Diagram failed to render.</pre>';
+        console.error('Mermaid render failed', err);
+      }
+    }
+  }
+
+  function rerender() {
+    if (initialized) {
+      renderAll();
+    } else {
+      renderAll();
+    }
+  }
+
+  rerender();
+
+  document.addEventListener('astro:after-swap', () => {
+    initialized = false;
+    rerender();
+  });
+
+  const observer = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      if (m.attributeName === 'data-theme') {
+        initialized = false;
+        rerender();
+        break;
+      }
+    }
+  });
+  observer.observe(document.documentElement, { attributes: true });
+</script>

@@ -1,0 +1,195 @@
+---
+title: "An internal AI development platform"
+summary: "Owned the company-wide rollout of Cursor at Amdocs. Authored the team's knowledge base, agent skills, and workflow rules from scratch, and engineered a layered context-loading strategy that prevents context-window blowout on multi-MB telecom codebases."
+role: "Owner & primary author"
+dates: "Aug 2025 — Present"
+tags: ["Cursor", "Knowledge engineering", "Agent workflows", "Context design"]
+order: 2
+featured: true
+accent: "amber"
+diagram: "none"
+---
+
+## The problem
+
+When Amdocs got an enterprise Cursor license, a problem came along with it: enterprise
+codebases break naive AI tooling.
+
+The codebases I work in are large, old, and full of context that doesn't live in any
+one file. A single feature touches C, Pro*C, shell scripts, Python data layers, and
+SQL. Conventions live in heads, not in headers. Domain rules from billing in 2008 are
+still authoritative and still subtle. A coding agent given an unfocused look at this
+material will do one of three things, all bad:
+
+- **Drown in the wrong context.** Half a million tokens of unrelated code arrive on
+  the prompt; the agent either runs out of window or generalizes from material that
+  has nothing to do with the task.
+- **Re-derive things the team already decided.** Naming conventions, error-handling
+  patterns, the boundary between pure functions and side-effecting plumbing — every
+  team has these. Agents that don't know them invent worse versions and slow review
+  down.
+- **Behave inconsistently across the org.** Two engineers ask the same question and
+  get different answers because each is running with their own ad-hoc setup. The
+  tool's value compounds when behavior is consistent; it punishes you when it isn't.
+
+So the question wasn't "how do we get developers using Cursor?" Most engineers are
+willing. It was: **how do we make Cursor reliably useful on a multi-MB telecom
+codebase, the same way for everyone, without anybody having to redo the legwork?**
+
+## What I owned
+
+I was given the rollout end-to-end. That meant authoring, from scratch:
+
+- The **team knowledge base** — the documents the agent reads as ambient context.
+- The **agent skills** — repeatable workflows the agent can invoke.
+- The **rules** — the conventions and constraints that shape every response.
+- The **distribution** — how this material gets into every developer's editor without
+  manual setup.
+- The **feedback loop** — how the rules and skills evolve based on what's actually
+  frustrating people week to week.
+
+This is the work the original Cursor docs leave to the customer. There is no shrink-wrapped
+"telecom backend" template, and there shouldn't be. The leverage is in the org-specific
+material, and that has to be authored by someone who knows the org.
+
+## The mechanism: layered context loading
+
+The most load-bearing design decision is what I think of as **layered context loading**.
+It comes from one observation: most of the time the agent doesn't need most of the
+context.
+
+The naive setup is to dump every rule, every skill description, and a wide swath of
+the codebase into the prompt on every request. That works for a 3-file codebase. It
+fails on a 3-MB codebase the moment you scale up — context windows fill, irrelevant
+material drowns out the relevant material, and the agent's behavior degrades in ways
+that are hard to debug.
+
+The layered approach inverts this. Each layer is loaded only if its scope matches:
+
+- **Always-on layer.** A short, dense set of universal rules: how to write commits in
+  this repo, what languages are in play, what *not* to do (touch the schema without
+  approval, push to `main` without review, suggest bringing in a new dependency
+  without asking). A few hundred tokens. Cheap, ever-present.
+- **Glob-scoped layer.** Rules that load only when the agent is acting on files
+  matching a pattern. The C/C++ rules load when editing `src/**/*.{c,h}`. The
+  WebFOCUS converter rules load when editing `tools/converter/**`. A Python data
+  layer's pandas conventions load only when editing pandas code. None of these
+  appear when they're not relevant.
+- **Skill-invoked layer.** Skills are entire workflows the agent can pull in on
+  demand. "Open a PR for the current branch." "Run the affected tests, summarize
+  failures." "Review this diff using our checklist." Each skill is a small
+  self-contained brief; it only enters the prompt when the agent decides it
+  applies, and only carries the material that workflow needs.
+- **Reference layer (lazy-loaded).** Long-form architecture docs, runbooks, design
+  records. The agent knows they exist; it loads them only when a question warrants
+  the depth.
+
+A simple Cursor rule that demonstrates the glob-scoping pattern:
+
+```yaml
+---
+description: WebFOCUS converter conventions
+globs: tools/converter/**
+alwaysApply: false
+---
+
+- Every WebFOCUS verb maps to exactly one Pandas operation; never compose them
+  in the converter — leave composition to the user's report code.
+- All converter output goes through the formatter in `format.py`. Never emit
+  raw strings.
+- Tests for converter changes live in `tests/converter/` and mirror the verb
+  filenames.
+```
+
+A simple skill description (the brief the agent reads when invoking the skill):
+
+```markdown
+---
+name: open-pr
+description: Open a pull request for the current branch using the team template
+allowedTools: ['Bash', 'Read']
+---
+
+When invoked:
+1. Verify the current branch is not main and has commits ahead of origin/main.
+2. Push the branch with `--set-upstream` if necessary.
+3. Generate a PR title from the branch name and the most recent commit subject.
+4. Generate the PR body from the team template at `.github/pr-template.md`,
+   filling in the "what changed" section from the commit log.
+5. Open the PR via `gh pr create` and print the URL.
+```
+
+The skill plus the rule together carry the project's expectations for that workflow.
+Neither has to live in every developer's head; both follow the codebase.
+
+## Workflows worth automating
+
+The flagship payoff is recurring keystroke removal. A short, non-exhaustive list of
+workflows that became invokable from natural language:
+
+- **Git operations.** "Stage the changes I made to the converter, commit them with a
+  conventional-commits message, and push." The team's commit conventions are encoded
+  once; every commit conforms.
+- **PR creation.** As above. PR descriptions follow the template; the body is
+  populated from the actual commits, not from imagination.
+- **Code review.** "Review my last commit using the team checklist" runs a structured
+  pass over the diff and surfaces the things humans would catch on a slow day. It
+  doesn't replace human review; it removes the easy issues so the human reviewer
+  can spend their time on the hard ones.
+- **Repetitive scaffolding.** Adding a new converter verb, a new gRPC service stub,
+  a new pandas report — each is a skill with a small template. Boilerplate becomes
+  invocable.
+
+None of these are individually exotic. The leverage is in the **catalog** — many
+small workflows, each authored once, each available everywhere.
+
+## What it took to ship
+
+The interesting half of this project wasn't the writing. It was the iteration loop.
+
+The first version of every rule I wrote was wrong in some small way. Maybe the
+convention I documented was the convention I personally followed, not the one the
+team had converged on. Maybe an example I gave was subtly off. Maybe a skill failed
+on the seventh edge case but worked on the first six.
+
+The fix wasn't to write better rules upfront — it was to make the feedback loop
+short. A standing channel for "this rule is annoying me" / "this skill failed on
+my repo" / "the agent did the wrong thing here." Every report got triaged the same
+week. Most fixes were five-minute edits to a rule or a skill description. A few
+exposed deeper issues — the agent confidently using an old API name because the
+docs in the knowledge base hadn't been refreshed when the service was renamed; that
+sort of thing.
+
+The result of the iteration loop is the thing that actually distinguishes a useful
+internal AI platform from a fragile one. Rules and skills written once and forgotten
+rot quickly. Rules and skills with a feedback loop attached compound.
+
+## What it changed
+
+The visible payoff is keystroke removal — dozens of repetitive operations per
+developer per day collapse into natural-language commands. That's real, and it
+adds up.
+
+The less visible payoff is **consistency**. Two engineers asking the agent to "open
+a PR for this branch" get the same PR shape, the same template, the same review
+expectations. The agent is one of the channels through which the team's conventions
+are enforced. That's a property a lot of engineering orgs would pay for; here we
+got it as a side effect of the rollout.
+
+## Lessons
+
+**AI tooling is a knowledge-engineering problem, not a prompt-engineering problem.**
+Almost everything that improves agent behavior on a real codebase is about *which
+context arrives, when*. The prompt phrasing is a rounding error compared to that.
+
+**Layered context beats wide context.** The temptation is to load everything
+the agent might need. The reality is that loading everything degrades the response
+on every task that doesn't need everything. Layer aggressively; load lazily.
+
+**Skills are reusable workflow components; rules are the conventions they run inside.**
+Treat them as separate concerns. A skill that fights a rule is a bug in one of them;
+finding which is the maintenance work.
+
+**The feedback loop is the platform.** A static set of rules and skills is a snapshot.
+The thing that compounds is the rate at which the snapshot improves in response to
+real usage. Build that loop on day one, not month six.

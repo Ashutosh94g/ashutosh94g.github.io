@@ -1,0 +1,193 @@
+---
+title: "Tuxedo to gRPC: a migration framework for Tier-1 telecom"
+summary: "Designed a generic protocol shim that translates Oracle Tuxedo's flattened buffers into strongly-typed Protobuf with zero changes to business code. Validated as a POC on one production service; now being rolled out across CK Hutchison's Three UK and Three Ireland."
+role: "Designer & primary engineer"
+dates: "Jun 2025 — Nov 2025"
+tags: ["gRPC", "Protobuf", "HAProxy", "Consul", "Nomad", "Kafka"]
+order: 1
+featured: true
+accent: "indigo"
+diagram: "mermaid-tuxedo"
+---
+
+## The problem
+
+A Tier-1 European telecom carrier was running its core backend on Oracle Tuxedo —
+a battle-tested transaction monitor that has carried billing, provisioning, and
+account-management workloads for some operators for over two decades. Tuxedo is
+genuinely good at the job it was designed for, but the cost surface had drifted out
+from under it.
+
+Three problems compound:
+
+- **C-only ecosystem lock-in.** Services written for Tuxedo are typically C, and
+  service-to-service communication uses Tuxedo's flattened-buffer types — fixed-width,
+  position-encoded blobs that are basically untyped on the wire. Wanting to write a
+  new service in Go or Rust, or wire one into Kafka, means writing a translation
+  layer for every interaction.
+- **A licensing footprint that scales with cores.** Industry analysts publish
+  Oracle Tuxedo at roughly **$60,000 per Oracle processor** list price plus the
+  standard 22% annual support fee, with per-processor add-ons for management
+  (TSAM ~$14K), web access (SALT ~$12K), and Java integration (Jolt ~$9K). See the
+  [Oracle Technology Global Price List](https://www.oracle.com/corporate/pricing/technology-price-list.pdf)
+  and [Redress Compliance's Tuxedo licensing guide](https://redresscompliance.com/oracle-tuxedo-licensing-the-ultimate-guide/).
+  At Tier-1 carrier scale this is comfortably a multi-million-dollar annual
+  dependency before you write a single line of code.
+- **No clean path to anything modern.** Streaming events into Kafka, exposing services
+  to a service mesh, deploying alongside Kubernetes-shaped workloads — every one of
+  these wants to talk to a typed RPC, not a flattened-buffer transaction.
+
+The question wasn't really "how do we use less Tuxedo." It was: **how do you get off
+Tuxedo without rewriting decades of business logic that the carrier cannot afford
+to invalidate?**
+
+## What I actually built
+
+The honest framing matters here, because it's both more accurate and more impressive
+than the alternative.
+
+I designed and shipped a **migration framework** — a generic protocol shim plus a
+runtime that any Tuxedo-shaped service can drop into. We validated it end-to-end on
+one production service as a proof of concept. The framework is now being adopted by
+**CK Hutchison's [Three UK](https://www.amdocs.com/news-press/three-uk-expands-strategic-collaboration-amdocs-provide-consumers-next-generation-digital)
+and [Three Ireland](http://www.irishexaminer.com/business/arid-20387496.html)** for
+fleet-wide rollouts, each at their own pace and against the quirks of their own
+deployment.
+
+That framing — framework + POC + adopters — is the real shape of the work. Calling it
+"migrated a backend" would have been an overclaim. Calling it a framework being
+rolled out across multiple Tier-1 carriers is **a platform-engineering story instead
+of a single-project story**, and it's defensible from the public Amdocs press
+record alone.
+
+## The protocol shim
+
+The headline technical claim is **zero changes to business code**. That deserves
+unpacking, because it's the difference between a six-month migration and a six-year
+migration.
+
+Tuxedo's wire format is what an old-school C programmer calls a "flattened buffer":
+a fixed-layout struct, padded to alignment, sent as raw bytes. Schema lives in C
+header files; type-safety lives in code review. Add a field and every consumer
+recompiles or breaks.
+
+Modern services want the opposite: a strongly-typed, schema-versioned, language-agnostic
+RPC contract. Protobuf and gRPC fit that shape exactly.
+
+The shim sits between the two:
+
+```protobuf
+// Old: a flattened-buffer style record (untyped on the wire)
+struct CustomerRequest {
+    char  customer_id[16];
+    char  request_type[8];
+    int   sequence;
+    char  payload[1024];   // payload bytes, parsed by request_type
+};
+```
+
+```protobuf
+// New: schema-versioned, oneof-typed payload, language-agnostic
+message CustomerRequest {
+  string customer_id = 1;
+  RequestType request_type = 2;
+  uint64 sequence = 3;
+
+  oneof payload {
+    BillingPayload billing = 10;
+    AccountPayload account = 11;
+    ProvisioningPayload provisioning = 12;
+  }
+}
+```
+
+The shim takes a small declarative description of a Tuxedo buffer's field layout and
+generates the encode / decode plumbing in both directions. A legacy C client keeps
+sending flattened buffers; a new gRPC service receives strongly-typed messages. A new
+gRPC client emits Protobuf; a still-legacy Tuxedo service receives a buffer that
+matches the C struct it has always expected.
+
+Concretely, services don't change. The shim changes the **protocol surface** —
+business logic, validation rules, database access, caching, every line of the
+domain layer — survives the migration untouched. That's the leverage. Decades of
+hard-won correctness in billing and provisioning code does not get re-litigated.
+
+## The runtime
+
+The shim is the small clever piece. The runtime is the unglamorous piece that makes
+it work in production.
+
+The architecture diagram above lays out the moving parts. Five components, each
+doing exactly one job:
+
+- **HAProxy** is the front door. Every incoming gRPC call lands here and gets
+  load-balanced across whatever backends Consul currently knows about. HAProxy is
+  rock-solid, well-understood, and replaceable — Envoy or NGINX could slot into
+  the same role with no other changes.
+- **Consul** is the service registry. Every gRPC service registers itself on startup
+  with health checks; Consul keeps the live map of "which services are healthy at
+  which addresses." Service discovery without a special client library — services
+  look services up by name, not by address.
+- **Consul Template** is the bridge between Consul and HAProxy. It watches the
+  Consul catalog, regenerates HAProxy's config file when the topology changes, and
+  triggers a reload. New service instances join the mesh in seconds without anyone
+  editing a config file.
+- **Nomad** is the orchestrator. It schedules services across the cluster, scales
+  replicas based on load or schedule, and handles deploys. Same shape as Kubernetes
+  for our purposes; significantly simpler operational footprint.
+- **Kafka** is the open door. Once services speak gRPC, wiring them into event
+  streams is no longer a special project — it's just another service. Real-time
+  billing event flows, audit pipelines, downstream analytics all become trivially
+  available.
+
+Picking HashiCorp tools (Consul + Nomad + Consul Template) was deliberate: each
+piece is replaceable, well-documented, OSS, and operationally calm. If a future
+adopter wants HAProxy → Envoy, Nomad → Kubernetes, or Consul → etcd, the swap is
+straightforward because nothing in the framework depends on the specific tool. It
+depends on the **role** each tool plays.
+
+## What shipped, who's using it
+
+The POC was a single production service migrated end-to-end. Same business logic,
+same data flows, same database — but now reachable over gRPC, observable through
+the new mesh, deployable through Nomad, and (newly) able to publish into Kafka.
+
+That POC is the proof. The carrier sign-off was: *if this works for one service
+without changing business code, it works for the rest.*
+
+Public press confirms the adopters. Both are CK Hutchison subsidiaries:
+
+- **Three UK** — the [Amdocs strategic-collaboration announcement (Aug 2021)](https://www.amdocs.com/news-press/three-uk-expands-strategic-collaboration-amdocs-provide-consumers-next-generation-digital)
+  and the [end-to-end digital-transformation completion writeup](https://www.thefastmode.com/technology-solutions/24812-three-uk-amdocs-complete-e2e-digital-transformation-project)
+  cover the broader engagement.
+- **Three Ireland** — public reporting via the [Irish Examiner](http://www.irishexaminer.com/business/arid-20387496.html)
+  on the Amdocs partnership.
+
+The framework is the connective tissue both rollouts run on. Each carrier's system
+has slightly different quirks; the framework adapts without changing.
+
+## Lessons
+
+A few things that turned out to matter more than I expected.
+
+**Honest framing scales better than aspirational framing.** A reusable framework
+adopted by multiple Tier-1 carriers is a stronger signal than "migrated a backend."
+It also survives a hostile interview question: "Did you really migrate the whole
+thing?" "No — I built the framework that is migrating it. Here's the POC. Here are
+the adopters."
+
+**Migrate the protocol surface, not the application layer.** The reason this finished
+in months instead of years is that no one had to re-litigate billing logic or
+provisioning rules. The schema for those domains stayed in the database and in the
+service code. What changed was the wire format. That's a much smaller change than it
+looks like.
+
+**Pick infrastructure pieces that each do one job.** HAProxy doesn't know about
+Consul. Consul doesn't know about Nomad. Consul Template is the only piece that
+spans two — and it's a thin daemon. Each component is individually swappable and
+operationally calm. The framework outlives any single tool choice.
+
+**The economics live in the licensing, not the engineering.** Tuxedo's cost is
+recurring and per-processor. The migration's payoff is removing the recurring
+licensing surface, not the one-time engineering cost. That framing changes how the
+program gets evaluated by everyone above the engineering org.

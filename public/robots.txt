@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ashutosh94g.github.io/sitemap-index.xml

@@ -1,0 +1,41 @@
+---
+const year = new Date().getFullYear();
+
+const social = [
+  { href: 'https://github.com/ashutosh94g', label: 'GitHub' },
+  { href: 'https://www.linkedin.com/in/ashutosh94g/', label: 'LinkedIn' },
+  { href: 'mailto:ashutosh94g@gmail.com', label: 'Email' },
+  { href: '/resume.pdf', label: 'Resume' },
+];
+---
+
+<footer class="border-t border-[var(--border)] mt-24">
+  <div
+    class="max-w-5xl mx-auto px-5 sm:px-8 py-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <p class="text-sm text-[var(--fg-subtle)] m-0">
+      &copy; {year} Ashutosh Modi &middot; Built with <a
+        href="https://astro.build"
+        rel="noopener"
+        class="text-[var(--fg-muted)] hover:text-[var(--link)]">Astro</a
+      >.
+    </p>
+    <ul class="flex flex-wrap gap-x-5 gap-y-2 list-none m-0 p-0">
+      {
+        social.map((s) => (
+          <li>
+            <a
+              href={s.href}
+              class="text-sm text-[var(--fg-muted)] hover:text-[var(--link)] no-underline"
+              {...(s.href.startsWith('http')
+                ? { target: '_blank', rel: 'noopener' }
+                : {})}
+            >
+              {s.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</footer>

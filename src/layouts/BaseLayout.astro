@@ -1,0 +1,107 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '@fontsource/source-serif-4/400.css';
+import '@fontsource/source-serif-4/600.css';
+import '@fontsource/source-serif-4/700.css';
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  pageType?: 'website' | 'article';
+}
+
+const SITE_NAME = 'Ashutosh Modi';
+const SITE_DEFAULT_DESCRIPTION =
+  'Backend engineer at Amdocs. I build platform infrastructure for Tier-1 telecom carriers — distributed systems, parser-driven tooling, and an internal AI development platform.';
+
+const {
+  title,
+  description = SITE_DEFAULT_DESCRIPTION,
+  ogImage = '/og/default.png',
+  noindex = false,
+  pageType = 'website',
+} = Astro.props;
+
+const fullTitle = !title || title === SITE_NAME ? SITE_NAME : `${title} — ${SITE_NAME}`;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImageUrl = new URL(ogImage, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE_NAME} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)" />
+
+    <meta name="format-detection" content="telephone=no" />
+
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content={pageType} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${SITE_NAME} — ${description}`} />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={`${SITE_NAME} — ${description}`} />
+
+    <script is:inline>
+      (function () {
+        try {
+          const stored = localStorage.getItem('theme');
+          const system = window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+          const theme = stored === 'light' || stored === 'dark' ? stored : system;
+          document.documentElement.dataset.theme = theme;
+        } catch (e) {
+          /* private mode or storage disabled */
+        }
+      })();
+    </script>
+
+    <ClientRouter fallback="swap" />
+
+    <slot name="head" />
+  </head>
+  <body class="bg-[var(--bg)] text-[var(--fg)]">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-[var(--bg-elev)] focus:text-[var(--fg)] focus:border focus:border-[var(--border-strong)] focus:px-3 focus:py-2 focus:rounded"
+    >
+      Skip to main content
+    </a>
+    <Nav />
+    <main id="main" class="flex-1 w-full">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,71 @@
+---
+const social = [
+  {
+    href: 'https://github.com/ashutosh94g',
+    label: 'GitHub',
+    external: true,
+    primary: false,
+  },
+  {
+    href: 'https://www.linkedin.com/in/ashutosh94g/',
+    label: 'LinkedIn',
+    external: true,
+    primary: false,
+  },
+  {
+    href: 'mailto:ashutosh94g@gmail.com',
+    label: 'Email',
+    external: false,
+    primary: false,
+  },
+  { href: '/resume.pdf', label: 'Resume (PDF)', external: false, primary: true },
+];
+---
+
+<section class="max-w-3xl mx-auto px-5 sm:px-8 pt-16 pb-14 sm:pt-24 sm:pb-20">
+  <p class="text-sm text-[var(--fg-subtle)] uppercase tracking-wider font-medium mb-4">
+    Software Developer at Amdocs &middot; Gurgaon, India
+  </p>
+  <h1
+    class="font-serif text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.05] mb-7"
+  >
+    I build platform infrastructure for Tier-1 telecom carriers.
+  </h1>
+  <p class="text-lg sm:text-xl text-[var(--fg-muted)] leading-relaxed mb-9 max-w-2xl">
+    Currently shipping a Tuxedo&#8202;&rarr;&#8202;gRPC migration framework being rolled
+    out across CK Hutchison's Three UK and Three Ireland, an internal AI development
+    platform for the engineering org, and parser-driven tooling that catches defects at
+    compile time.
+  </p>
+  <div class="flex flex-wrap gap-3">
+    {
+      social.map((s) => (
+        <a
+          href={s.href}
+          {...(s.external ? { target: '_blank', rel: 'noopener' } : {})}
+          class={
+            s.primary
+              ? 'inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[var(--color-accent-600)] text-white no-underline font-medium hover:bg-[var(--color-accent-700)] transition-colors'
+              : 'inline-flex items-center gap-2 px-4 py-2 rounded-md border border-[var(--border-strong)] text-[var(--fg)] no-underline font-medium hover:bg-[var(--bg-elev)] transition-colors'
+          }
+        >
+          {s.label}
+          {s.external && (
+            <svg
+              aria-hidden="true"
+              class="w-3.5 h-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M7 17 17 7M8 7h9v9" />
+            </svg>
+          )}
+        </a>
+      ))
+    }
+  </div>
+</section>

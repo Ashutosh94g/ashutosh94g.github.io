@@ -1,0 +1,69 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  summary: string;
+  role: string;
+  dates: string;
+  tags: string[];
+  accent?: 'indigo' | 'amber' | 'emerald';
+  index?: number;
+}
+
+const {
+  href,
+  title,
+  summary,
+  role,
+  dates,
+  tags,
+  accent = 'indigo',
+  index,
+} = Astro.props;
+
+const accentRule = {
+  indigo: 'before:bg-indigo-500',
+  amber: 'before:bg-amber-500',
+  emerald: 'before:bg-emerald-500',
+}[accent];
+---
+
+<a
+  href={href}
+  class={`group relative block rounded-lg border border-[var(--border)] bg-[var(--bg-elev)] no-underline overflow-hidden transition-all duration-200 hover:border-[var(--border-strong)] hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.18)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent-500)] before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-[3px] ${accentRule}`}
+>
+  <div class="p-6 sm:p-7 pl-7 sm:pl-9">
+    <div
+      class="flex items-baseline justify-between gap-4 text-xs uppercase tracking-wider text-[var(--fg-subtle)] mb-3"
+    >
+      <span>
+        {index !== undefined ? `Case study ${String(index).padStart(2, '0')}` : 'Case study'}
+        &middot; {role}
+      </span>
+      <span class="hidden sm:inline">{dates}</span>
+    </div>
+    <h3
+      class="font-serif text-2xl sm:text-3xl font-semibold tracking-tight leading-tight text-[var(--fg)] mb-3 group-hover:text-[var(--link)] transition-colors"
+    >
+      {title}
+    </h3>
+    <p class="text-[var(--fg-muted)] leading-relaxed mb-5">
+      {summary}
+    </p>
+    <div class="flex flex-wrap items-center gap-2">
+      {
+        tags.slice(0, 4).map((tag) => (
+          <span class="inline-flex text-xs px-2 py-1 rounded border border-[var(--border)] text-[var(--fg-subtle)] bg-[var(--bg)]">
+            {tag}
+          </span>
+        ))
+      }
+      <span
+        class="ml-auto text-sm text-[var(--fg-muted)] group-hover:text-[var(--link)] transition-colors"
+        aria-hidden="true"
+      >
+        Read &rarr;
+      </span>
+    </div>
+  </div>
+</a>
