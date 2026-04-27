@@ -101,11 +101,11 @@ const awards = [
       </aside>
 
       <!-- Right rail: bullet timeline -->
-      <ol class="relative list-none m-0 p-0 pl-8">
+      <ol class="relative list-none m-0 p-0">
         <span class="timeline-line" aria-hidden="true"></span>
         {bullets.map((b, i) => (
           <li
-            class="reveal relative mb-10 last:mb-0"
+            class="reveal relative mb-10 pl-10 sm:pl-12 last:mb-0"
             style={`transition-delay: ${i * 90}ms`}
           >
             <span class="timeline-dot" aria-hidden="true"></span>

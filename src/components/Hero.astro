@@ -16,7 +16,9 @@
  * elements globally.
  */
 
-const headlineLine1 = ["Hi,", "I\u2019m", "Ashutosh", "Modi."] as const;
+const headlineIntro = ["Hi,", "I\u2019m"] as const;
+const headlineFirstName = "Ashutosh";
+const headlineLastName = "Modi.";
 const headlineLine2 = [
   "I",
   "build",
@@ -30,11 +32,12 @@ const headlineLine2 = [
 
 const baseDelay = 200;
 const wordStep = 70;
-const line2Start = baseDelay + headlineLine1.length * wordStep + 80;
+const nameStart = baseDelay + headlineIntro.length * wordStep + 60;
+const line2Start = baseDelay + (headlineIntro.length + 2) * wordStep + 140;
 
 const stats = [
   { value: "3.5y", label: "Software developer", caption: "Amdocs · Gurgaon" },
-  { value: "4-5", label: "Engineer execution", caption: "Review + unblocking" },
+  { value: "4-5", label: "Team execution", caption: "Review + unblocking" },
   { value: "500+", label: "Legacy scripts", caption: "Automated migration work" },
   { value: "50%+", label: "Tooling friction cut", caption: "Cursor + shell workflows" },
 ];
@@ -85,14 +88,20 @@ const stats = [
     </p>
 
     <!-- Display headline -->
-    <h1 id="hero-heading" class="display-1 max-w-[15ch] sm:max-w-[18ch] mb-2">
+    <h1 id="hero-heading" class="display-1 max-w-none sm:max-w-[18ch] mb-2">
       <span class="hero-line">
-        {headlineLine1.map((word, i) => (
+        {headlineIntro.map((word, i) => (
           <span style={`--delay: ${baseDelay + i * wordStep}ms`}>
-            {i < 2 ? <em class="font-light text-[var(--fg-muted)]">{word}</em> : word}
-            {i < headlineLine1.length - 1 && " "}
+            <em class="font-light text-[var(--fg-muted)]">{word}</em>
+            {i < headlineIntro.length - 1 && " "}
           </span>
         ))}
+      </span>
+      <span class="hero-line hero-name-line">
+        <span style={`--delay: ${nameStart}ms`}>{headlineFirstName}</span>
+      </span>
+      <span class="hero-line hero-name-line">
+        <span style={`--delay: ${nameStart + wordStep}ms`}>{headlineLastName}</span>
       </span>
       <span class="hero-line gradient-text mt-1">
         {headlineLine2.map((word, i) => (
@@ -121,31 +130,12 @@ const stats = [
       style={`--delay: ${line2Start + headlineLine2.length * wordStep + 360}ms`}
     >
       <a
-        href="#principles"
-        class="btn-cta btn-cta-primary magnetic-strong"
-        data-scroll-target
-      >
-        See how I work
-        <svg
-          aria-hidden="true"
-          class="w-4 h-4"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M5 12h14" />
-          <path d="m13 5 7 7-7 7" />
-        </svg>
-      </a>
-      <a
         href="/resume.pdf"
-        class="btn-cta btn-cta-secondary magnetic"
+        class="btn-cta btn-cta-primary magnetic-strong"
         target="_blank"
         rel="noopener"
       >
+        Resume PDF
         <svg
           aria-hidden="true"
           class="w-4 h-4"
@@ -160,7 +150,26 @@ const stats = [
           <path d="m6 9 6 6 6-6" />
           <path d="M5 21h14" />
         </svg>
-        Resume PDF
+      </a>
+      <a
+        href="#principles"
+        class="btn-cta btn-cta-secondary magnetic"
+        data-scroll-target
+      >
+        <svg
+          aria-hidden="true"
+          class="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 12h14" />
+          <path d="m13 5 7 7-7 7" />
+        </svg>
+        How I work
       </a>
       <a
         href="https://www.linkedin.com/in/ashutosh94g/"
@@ -249,6 +258,16 @@ const stats = [
     font-style: italic;
     font-weight: 400;
     letter-spacing: -0.02em;
+  }
+
+  @media (max-width: 480px) {
+    h1 {
+      font-size: clamp(1.65rem, 7vw, 1.95rem);
+    }
+
+    .hero-name-line {
+      white-space: nowrap;
+    }
   }
 
   /* Scroll cue: a tiny vertical capsule with a falling dot */

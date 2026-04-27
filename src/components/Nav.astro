@@ -20,43 +20,23 @@ const isHome = path === "/" || path === "";
 
 <header class="nav-shell">
   <nav
-    class="site-container h-16 flex items-center justify-between gap-4"
+    class="site-container nav-layout"
     aria-label="Primary"
   >
-    <a
-      href="/"
-      class="group inline-flex items-center gap-2.5 no-underline font-semibold tracking-tight text-[var(--fg)] hover:text-[var(--link)] transition-colors"
-      aria-current={isHome ? "page" : undefined}
-    >
-      <span
-        class="inline-flex items-center justify-center w-8 h-8 rounded-md text-white font-serif text-sm font-bold leading-none shadow-[0_4px_12px_-4px_rgba(139,92,246,0.6)]"
-        style="background: linear-gradient(135deg, #6366f1, #8b5cf6 50%, #ec4899);"
-        aria-hidden="true"
+    <div class="nav-top">
+      <a
+        href="/"
+        class="nav-brand"
+        aria-current={isHome ? "page" : undefined}
       >
-        am
-      </span>
-      <span class="hidden sm:inline text-[0.95rem]">Ashutosh Modi</span>
-    </a>
+        Ashutosh Modi
+      </a>
 
-    <ul class="hidden sm:flex items-center gap-1 list-none m-0 p-0">
-      {links.map((link) => (
-        <li>
-          <a
-            href={link.href}
-            class="px-3 py-1.5 rounded-md text-sm no-underline text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[rgba(255,255,255,0.03)] transition-colors"
-          >
-            {link.label}
-          </a>
-        </li>
-      ))}
-    </ul>
-
-    <div class="flex items-center gap-2">
       <a
         href="/resume.pdf"
         target="_blank"
         rel="noopener"
-        class="btn-cta btn-cta-secondary text-sm"
+        class="nav-resume btn-cta btn-cta-secondary text-sm"
         style="padding: 0.5rem 0.9rem; border-radius: 0.6rem; font-size: 0.85rem;"
       >
         <svg
@@ -76,5 +56,18 @@ const isHome = path === "/" || path === "";
         Resume
       </a>
     </div>
+
+    <ul class="nav-links">
+      {links.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class="nav-link"
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
   </nav>
 </header>
