@@ -15,11 +15,11 @@ const projects = [
     dates: "Jun 2025 \u2192 Nov 2025",
     href: "/case-studies/tuxedo-grpc/",
     summary:
-      "A generic protocol shim that translates Oracle Tuxedo\u2019s flattened buffers into strongly-typed Protobuf \u2014 with zero changes to twenty years of business logic. Built on HAProxy + Consul + Nomad + Consul Template + Kafka.",
+      "A migration framework that wraps legacy Tuxedo-style services with typed gRPC interfaces while preserving existing business logic. The interesting part is the safety model: generated contracts, runtime routing, and a rollout path that lets old and new systems coexist.",
     bullets: [
       "Validated end-to-end as a POC on a production service.",
-      "Currently being rolled out across CK Hutchison\u2019s <strong>Three UK</strong> and <strong>Three Ireland</strong>.",
-      "Removes a multi-million-dollar Oracle dependency.",
+      "Built for incremental rollout across long-lived telecom systems.",
+      "Shows my approach to modernization without rewriting working code.",
     ],
     tech: ["gRPC", "Protobuf", "HAProxy", "Consul", "Nomad", "Kafka"],
     accent: "violet" as const,
@@ -28,12 +28,12 @@ const projects = [
   },
   {
     index: "02",
-    title: "Internal AI Development Platform",
+    title: "AI Knowledge Layer for Legacy Code",
     status: "Live & expanding",
     dates: "Aug 2025 \u2192 present",
     href: "/case-studies/atlas-knowledge-engine/",
     summary:
-      "Cursor rolled out company-wide on the enterprise license: a team knowledge base, agent skills, and workflow rules \u2014 all authored from scratch. A layered context-loading strategy lets agents reason over multi-MB telecom codebases without losing track of conventions.",
+      "Cursor workflows, team knowledge bases, and layered context design for large legacy codebases. The goal is not to make AI sound confident; it is to make it load the right source-backed context before it helps an engineer.",
     tech: ["Cursor", "Agent workflows", "Knowledge engineering"],
     accent: "indigo" as const,
     pattern: "mesh" as const,
@@ -45,7 +45,7 @@ const projects = [
     dates: "Jul 2024 \u2192 present",
     href: "/case-studies/compiler-driven-quality/",
     summary:
-      "Declarative Python library on Pandas/NumPy that replaces TIBCO WebFOCUS for telecom business reporting, plus a Lex/Yacc compiler that auto-converts 500+ legacy scripts. Per-script migration time: 48 hours \u2192 40 minutes.",
+      "A Python reporting library on Pandas/NumPy, plus a Lex/Yacc converter that moves legacy WebFOCUS scripts into the new surface. This is the same pattern I like elsewhere: parse the old language, generate the safe migration path.",
     tech: ["Python", "Pandas", "NumPy", "Lex/Yacc"],
     accent: "magenta" as const,
     pattern: "lines" as const,
@@ -57,7 +57,7 @@ const projects = [
     dates: "Jun 2023 \u2192 Sep 2023",
     href: "/case-studies/compiler-driven-quality/",
     summary:
-      "A Lex/Yacc compiler that scans every C source at build time and generates function prototypes, integrating them via preprocessor guards across 500+ files. Catches 80% of would-be production defects at compile time.",
+      "A build-time compiler that scans C sources, generates function prototypes, and catches signature drift before it becomes a production defect. Small tool, large leverage.",
     tech: ["Lex/Yacc", "C/C++", "Shell"],
     accent: "cyan" as const,
     pattern: "circuit" as const,
@@ -79,14 +79,14 @@ const projects = [
 
   <div class="relative site-container">
     <header class="reveal mb-16 max-w-3xl">
-      <p class="eyebrow mb-3">02 / Selected work</p>
+      <p class="eyebrow mb-3">03 / Selected work</p>
       <h2 id="projects-heading" class="display-2 mb-4">
-        Four pieces of work that don&rsquo;t fit on a one-page resume.
+        Selected engineering stories, not product pitches.
       </h2>
       <p class="text-lg text-[var(--fg-muted)] leading-relaxed">
-        Each one digs into the problem, the mechanism, and what shipped
-        &mdash; with the architecture, the measured numbers, and what stayed
-        with me afterwards. Click through for the deep-dive.
+        These are the projects I would talk through with another engineer:
+        what was fragile, what I changed, how I reduced risk, and what the work
+        taught me about building in large systems.
       </p>
     </header>
 

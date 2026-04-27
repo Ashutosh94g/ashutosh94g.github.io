@@ -1,0 +1,80 @@
+---
+/**
+ * HowIWork — person-first working style section.
+ *
+ * This gives recruiters and colleagues a quick read on judgment and taste
+ * before the project evidence appears.
+ */
+
+const principles = [
+  {
+    index: "01",
+    title: "Preserve behavior before changing surfaces",
+    body:
+      "Most of my strongest work is modernization work: changing protocols, tooling, and runtime paths while keeping business behavior stable enough for production teams to trust.",
+  },
+  {
+    index: "02",
+    title: "Turn repeated work into checked systems",
+    body:
+      "If a task repeats, I look for the structure underneath it. That is why parser-driven tools, generated code, build-time checks, and shell automation show up repeatedly in my work.",
+  },
+  {
+    index: "03",
+    title: "Use AI as an engineering system, not a shortcut",
+    body:
+      "I care less about prompt tricks and more about context design: giving agents source-backed knowledge, workflow rules, and review loops so they compose with engineers on real code.",
+  },
+  {
+    index: "04",
+    title: "Keep execution visible",
+    body:
+      "In team work, I naturally gravitate toward review, unblocking, and making decisions legible to peers and managers. Good engineering is easier when the state of the work is clear.",
+  },
+];
+---
+
+<section
+  id="principles"
+  class="relative scroll-mt-20 py-28 sm:py-36 border-b border-[var(--border)] overflow-hidden"
+  aria-labelledby="principles-heading"
+>
+  <div
+    class="absolute top-0 right-0 w-[520px] h-[520px] rounded-full opacity-15 blur-3xl pointer-events-none"
+    style="background: radial-gradient(circle, #06b6d4 0%, transparent 70%);"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative site-container">
+    <header class="reveal mb-14 max-w-3xl">
+      <p class="eyebrow mb-3">02 / How I work</p>
+      <h2 id="principles-heading" class="display-2 mb-4">
+        Careful with production, impatient with avoidable toil.
+      </h2>
+      <p class="text-lg text-[var(--fg-muted)] leading-relaxed">
+        The projects below are the evidence. This is the pattern behind them:
+        I like systems that are explicit, automatable, and understandable
+        enough that the next engineer can safely keep moving.
+      </p>
+    </header>
+
+    <div class="grid md:grid-cols-2 gap-5 sm:gap-6">
+      {principles.map((principle, i) => (
+        <article
+          class="reveal rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.015)] p-6 sm:p-7 backdrop-blur-sm transition-all hover:border-[var(--border-strong)] hover:-translate-y-0.5"
+          style={`transition-delay: ${i * 80}ms`}
+        >
+          <p class="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--fg-faint)] mb-4">
+            {principle.index}
+          </p>
+          <h3 class="font-serif text-xl sm:text-2xl font-semibold text-[var(--fg)] mb-3">
+            {principle.title}
+          </h3>
+          <p class="text-[var(--fg-muted)] leading-relaxed m-0">
+            {principle.body}
+          </p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,27 +1,27 @@
 ---
-title: "Atlas: a knowledge engine for an 18M-line legacy backend"
-cardTitle: "Atlas: a knowledge engine for an 18M-line legacy backend"
-summary: "A multi-phase knowledge engine that turns ~18M lines of C / Pro*C / shell into a layered, atom-graphed, AI-queryable map. Deterministic extraction does most of the work; targeted AI inference fills the contextual gaps with confidence scores attached."
-cardSummary: "A multi-phase knowledge engine that turns 18M lines of C / Pro*C / shell into a layered, atom-graphed, AI-queryable map. 1,200+ truth-grounded reasoning atoms across 8 core processes, 99.6% verification pass rate, under $10 of premium AI to rebuild the whole thing."
-role: "Owner & primary author"
+title: "Building an AI knowledge layer for legacy code"
+cardTitle: "AI knowledge layer for legacy code"
+summary: "A layered knowledge system that makes AI useful on a large legacy backend by combining deterministic extraction, source-backed context, and reviewable reasoning atoms."
+cardSummary: "A layered context and knowledge system for large legacy codebases: deterministic extraction first, AI inference only where it adds value, and verification attached to every claim."
+role: "Designer & implementation owner"
 dates: "Aug 2025 — Present"
-tags: ["Knowledge engineering", "Atlas", "Cursor", "LLM workflows", "Telecom backend"]
+tags: ["Knowledge engineering", "Cursor", "LLM workflows", "Legacy code"]
 order: 1
 featured: true
 accent: "amber"
 diagram: "none"
 sigil: "atlas"
-heroEyebrow: "Atlas, the team's flagship system"
+heroEyebrow: "AI workflows that respect source code"
 span: "wide"
 metrics:
-  - value: "~18M"
-    label: "Lines analyzed"
-  - value: "1,200+"
+  - value: "Layered"
+    label: "Context loading"
+  - value: "Source-backed"
     label: "Reasoning atoms"
-  - value: "99.6%"
-    label: "Truth-grounding pass"
-  - value: "<$10"
-    label: "AI cost / full rebuild"
+  - value: "Verified"
+    label: "Claims with citations"
+  - value: "CLI-first"
+    label: "Simple orchestration"
 ---
 
 import Mermaid from '../../components/Mermaid.astro';
@@ -35,8 +35,8 @@ import { atlasAtomTaxonomyMermaid } from '../../diagrams/atlas-atom-taxonomy';
 When a Tier-1 telecom backend turns twenty, three things have happened to it
 at once.
 
-It has **grown.** ~18 million physical lines of C, Pro\*C, and shell scripts;
-36 logical building blocks; thousands of database tables; hundreds of
+It has **grown.** Millions of physical lines of C, Pro\*C, and shell scripts;
+dozens of logical building blocks; thousands of database tables; hundreds of
 asynchronous jobs; eight core business processes that braid all of those
 together end-to-end.
 
@@ -69,51 +69,51 @@ The question isn't "how do we use AI on this codebase." It is: **what does the
 codebase need to look like as a knowledge artifact before AI can be reliably
 useful on it?**
 
-That artifact is Atlas.
+That artifact is the knowledge layer.
 
-## What Atlas is
+## What the knowledge layer is
 
-Atlas is a **knowledge engine** purpose-built for legacy telecom code. It is
+The system is a **knowledge engine** purpose-built for legacy telecom code. It is
 not a generic Cursor rollout, not a documentation generator, not a wiki. It is
-a layered, atom-graphed, AI-queryable map of an 18M-line backend, organized
+a layered, atom-graphed, AI-queryable map of a large backend, organized
 along three orthogonal dimensions, built up by a five-phase pipeline, and
 load-balanced by a layered context model that gives the AI exactly enough
 material to answer the question and not a token more.
 
-The headline numbers, before the architecture:
+The architecture before the details:
 
 <StatCallout
-  to="~18M lines"
-  label="Physical lines analyzed"
-  note="C, Pro*C, shell, and PL/SQL across 36 building blocks of a Tier-1 telecom backend."
+  to="Large"
+  label="Legacy code surface"
+  note="C, Pro*C, shell, and PL/SQL across many backend building blocks."
   accent="amber"
 />
 
 <StatCallout
-  to="1,200+ reasoning atoms"
-  label="Across 8 core business processes"
-  note="Atomic, verifiable dependency statements. 13,637 deterministic atoms layered underneath. 130K-node mega-graph at the top."
+  to="Layered"
+  label="Context model"
+  note="Progressive disclosure from small manifests down to source-backed forensic slices."
   accent="amber"
 />
 
 <StatCallout
-  to="99.6%"
-  label="Truth-grounding pass rate"
-  note="Atoms verified against the source code with citations; manually audited samples reach the same number. The 0.4% are flagged for review, not silently dropped."
+  to="Verified"
+  label="Truth-grounding pass"
+  note="Claims are checked against cited source slices; failed verifications are flagged for review."
   accent="amber"
 />
 
 <StatCallout
-  to="<$10"
-  label="Premium AI cost for a full KB rebuild"
-  note="Deterministic extraction does the bulk of the work. AI is reserved for the small set of contextual atoms that actually need inference."
+  to="CLI-first"
+  label="Orchestration"
+  note="Deterministic tools do the bulk work; AI is reserved for contextual inference."
   accent="amber"
 />
 
 ## Three axes: phases × layers × domains
 
 Most knowledge bases pick one organizing dimension — a tree of pages, a graph
-of nodes, a flat list of facts — and force everything into it. Atlas refuses
+of nodes, a flat list of facts — and force everything into it. This system refuses
 to. The codebase has three different shapes of question, and one dimension
 can't answer all of them.
 
@@ -125,19 +125,19 @@ The mental model is **three orthogonal axes**:
 | **Layers** | "How much detail do I need?" — progressive disclosure from a 1.2K-token manifest down to forensics | L1 &rarr; L7 |
 | **Domains** | "What part of the system are we in?" — codebase, database, jobs, infrastructure, etc. | ~10 domains |
 
-Any single piece of knowledge in Atlas has coordinates on all three. A specific
+Any single piece of knowledge in the system has coordinates on all three. A specific
 billing dependency lives at *Phase 4 (atoms) × Layer 3 (process detail) ×
 Domain "billing"*. A change-impact query for the same dependency might want
 *Phase 5 (CR pipeline) × Layer 5 (cross-domain) × Domains "billing + jobs"*.
 
 The axes are independent, so the lookup is a join. That sounds dry on paper;
 the consequence in practice is enormous: **every query loads exactly the
-material it needs and nothing else**, which is what makes Atlas usable on a
+material it needs and nothing else**, which is what makes the system usable on a
 codebase too large to ever fit in any single AI context window.
 
 ## Phase 1 — Architecture foundation
 
-Before anything else gets built, Atlas establishes the **architecture
+Before anything else gets built, the knowledge layer establishes the **architecture
 foundation**: a hand-curated map of what the system is, at the highest level
 of abstraction, in plain prose.
 
@@ -154,7 +154,7 @@ What goes in here:
   what hardware constraints exist.
 
 This phase is the only one a human writes from scratch. It's small,
-deliberately, and it's the **trunk that the rest of Atlas branches off**. Every
+deliberately, and it's the **trunk that the rest of the system branches off**. Every
 later phase references this layer. Every layer-1 manifest is a structured
 projection of it.
 
@@ -177,7 +177,7 @@ What gets extracted:
 - Every shell script entry point and the binaries it invokes.
 - Every cron job and asynchronous job runner, with cadence.
 
-The output is a structured corpus of about **13,637 deterministic atoms** —
+The output is a structured corpus of deterministic atoms —
 one atom per discovered fact, each citing the exact file, line, and function
 of origin. None of these atoms required AI to extract; all of them are
 exactly correct because they're a reflection of the source.
@@ -185,10 +185,9 @@ exactly correct because they're a reflection of the source.
 The reason for the no-AI rule isn't ideological. It's economic and reliable.
 
 ```text
-Cost of running deterministic scripts over 18M lines:        ~$0
-Cost of running an LLM over 18M lines:                       ~$thousands
-Truth-grounding rate of deterministic scripts:               100%
-Truth-grounding rate of an unaided LLM on the same task:     unknown
+Deterministic extraction: exact facts with source citations
+Unaided LLM pass: plausible prose with unknown coverage
+Hybrid approach: scripts first, AI only for contextual inference
 ```
 
 So the rule is: **if a fact can be extracted with a script, it must be**. AI
@@ -196,7 +195,7 @@ is reserved for the next phase, where it actually has work to do.
 
 ## Phase 3 — Layered knowledge: L1 to L7
 
-Phase 3 is where Atlas becomes **queryable**. The deterministic atoms from
+Phase 3 is where the knowledge layer becomes **queryable**. The deterministic atoms from
 phase 2 get composed into seven layers of progressively richer documentation.
 
 Each layer is a separate file (or set of files) per building block, each
@@ -230,8 +229,8 @@ sort of thing.
 
 The contrast is worth saying out loud. A naive RAG setup would load
 L4-or-deeper material for every query and spend hundreds of thousands of
-tokens per turn. Atlas serves a typical query for **a fraction of one cent**
-because the loader earned the right to skip the expensive layers.
+tokens per turn. The layered loader stays cheap because it earns the right to
+skip the expensive layers.
 
 ## Phase 4 — Reasoning atoms
 
@@ -277,30 +276,29 @@ atom carries all six.
 The headline numbers for phase 4:
 
 <StatCallout
-  to="1,200+ reasoning atoms"
-  label="Across the 8 core processes"
-  note="13,637 deterministic atoms underneath them; the reasoning atoms are the inferred layer that makes the dependency graph useful."
+  to="Reasoning atoms"
+  label="Across core processes"
+  note="Deterministic atoms sit underneath them; the reasoning atoms are the inferred layer that makes the dependency graph useful."
   accent="amber"
 />
 
 <StatCallout
-  to="130,000-node graph"
-  label="Atlas-wide dependency graph"
+  to="Dependency graph"
+  label="Knowledge-wide dependency graph"
   note="Edges link reasoning atoms to deterministic atoms to source files. Every edge is queryable; every node has a confidence score."
   accent="amber"
 />
 
 <StatCallout
-  to="99.6%"
-  label="Truth-grounding pass rate"
-  note="Each atom is verified by re-loading its cited source slice and checking the claim against it. Failed verifications are quarantined, not deleted."
+  to="Verified"
+  label="Truth-grounding pass"
+  note="Each atom is checked by re-loading its cited source slice and comparing the claim against it. Failed verifications are quarantined, not deleted."
   accent="amber"
 />
 
-The 99.6% figure is the most important one. Truth-grounding is not optional on
-a legacy system; an AI that's confidently wrong about billing semantics is
-worse than no AI at all. Atlas's verification step is what makes the rest of
-the system trustworthy.
+Truth-grounding is not optional on a legacy system; an AI that's confidently
+wrong about billing semantics is worse than no AI at all. The verification step
+is what makes the rest of the system trustworthy.
 
 ## Phase 5 — CR-to-implementation pipeline
 
@@ -308,7 +306,7 @@ The final phase — partly delivered, partly in flight — is the **change-reque
 pipeline**. The premise: most engineering work on a system this size is
 incremental. A CR comes in: "add a new field to the customer record, plumb it
 through these three reports, expose it on the partner API." From CR text to a
-shippable plan today is days of senior-engineer work. With Atlas in the loop,
+shippable plan today is days of senior-engineer work. With the knowledge layer in the loop,
 it should be hours.
 
 The pipeline is five steps:
@@ -316,7 +314,7 @@ The pipeline is five steps:
 1. **CR &rarr; intent.** Parse the CR text into structured intent: what
    building blocks are in scope, what kind of change (read-only, write, schema,
    API), what business process is affected.
-2. **Intent &rarr; HLD.** Generate a high-level design. Atlas surfaces the L1
+2. **Intent &rarr; HLD.** Generate a high-level design. The system surfaces the L1
    manifests of every in-scope building block; the HLD enumerates which
    functions, tables, and jobs need to change, with citations.
 3. **HLD &rarr; LLD.** Drop into L3/L4 for the touched code; produce a
@@ -332,7 +330,7 @@ The pipeline is five steps:
    test matrix being autogenerated end-to-end**; the remaining 2 are the
    trickiest cases (cross-process billing flows) and are the next milestone.
 
-This is the phase that converts Atlas from a knowledge artifact into a
+This is the phase that converts the knowledge layer from a static artifact into a
 **productive tool**. The earlier phases pay for themselves through the
 correctness of phase 5.
 
@@ -345,7 +343,7 @@ correctness of phase 5.
 
 ## The orchestration is a loop, not a runtime
 
-A small but important architectural decision: Atlas does not have a custom
+A small but important architectural decision: the system does not have a custom
 agent runtime. The orchestration is a **standard CLI loop** — Cursor or
 Copilot CLI calling well-defined tools that read the layered knowledge,
 emit prompts, parse responses, and write back atoms.
@@ -363,7 +361,7 @@ shape where all three are obvious.
 
 ## What it took to ship
 
-The interesting half of building Atlas was not the writing. It was the
+The interesting half of building this system was not the writing. It was the
 **iteration loop**: every layer's first version was wrong in some small way.
 A naming convention I documented was personal, not team-wide. An atom
 extraction script over-counted on a particular form of macro. An L4 flow
@@ -392,17 +390,17 @@ A few things that turned out to matter more than I expected.
 
 **Knowledge engineering &gt; prompt engineering.** Almost everything that
 improves agent behavior on a real codebase is about *which context arrives,
-when*. Atlas's whole shape is in service of that question. Prompt phrasing is
+when*. The whole shape of the system is in service of that question. Prompt phrasing is
 a rounding error compared to it.
 
-**Deterministic extraction is most of the value.** A 13,637-atom deterministic
-corpus, citing the source for every fact, gets you most of the way to a
+**Deterministic extraction is most of the value.** A deterministic corpus,
+citing the source for every fact, gets you most of the way to a
 queryable system. AI inference is the icing, not the cake. The temptation to
 skip the deterministic phase and have the model "just figure it out" is the
 single most expensive mistake we learned to avoid.
 
 **Confidence scores are non-negotiable on legacy systems.** Every atom in
-Atlas carries a confidence score and a provenance pointer. Engineers can — and
+the knowledge layer carries a confidence score and a provenance pointer. Engineers can — and
 do — look at the score before acting on the atom. An AI that says "I'm 60%
 sure" lets the human do their job; one that says "trust me" just shifts blame
 when it's wrong.

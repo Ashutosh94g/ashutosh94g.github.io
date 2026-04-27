@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "Personal portfolio and case-study site for Ashutosh Modi",
+  "description": "Person-first portfolio for Ashutosh Modi, software developer focused on backend platforms and developer tooling",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

@@ -1,27 +1,27 @@
 ---
-title: "Tuxedo to gRPC: a migration framework for Tier-1 telecom"
-cardTitle: "Tuxedo \u2192 gRPC: a migration framework for Tier-1 telecom"
-summary: "A Lex/Yacc transpiler, a protocol shim, and an in-house orchestrator that take Tier-1 telecom backends off Oracle Tuxedo with zero changes to business code. Validated on a production service; rolling out across CK Hutchison's Three UK and Three Ireland."
-cardSummary: "Lex/Yacc transpiler + protocol shim + in-house orchestrator that lift Tier-1 telecom backends off Oracle Tuxedo with zero changes to business code. Now deploying across two CK Hutchison carriers."
-role: "Designer & primary engineer"
-dates: "Jun 2025 — Present"
+title: "Tuxedo to gRPC: modernizing legacy RPC safely"
+cardTitle: "Tuxedo \u2192 gRPC: modernizing legacy RPC safely"
+summary: "A Lex/Yacc transpiler, protocol shim, and runtime path that wrap legacy Tuxedo-style services with typed gRPC interfaces while preserving existing business logic."
+cardSummary: "A protocol shim and generated contract layer that let legacy Tuxedo-style services expose typed gRPC interfaces without rewriting working business code."
+role: "Designer & implementation engineer"
+dates: "Jun 2025 — Nov 2025"
 tags: ["gRPC", "Protobuf", "Lex/Yacc", "HAProxy", "Consul", "Nomad"]
 order: 2
 featured: true
 accent: "indigo"
 diagram: "none"
 sigil: "tuxedo"
-heroEyebrow: "Two carriers in production rollout"
+heroEyebrow: "Migration framework for legacy services"
 span: "default"
 metrics:
   - value: "Zero"
     label: "Business-code changes"
-  - value: "2 carriers"
-    label: "Three UK + Three IE"
-  - value: "5 components"
-    label: "Each independently swappable"
-  - value: "Months"
-    label: "Not years"
+  - value: "POC"
+    label: "Validated on production service"
+  - value: "Typed"
+    label: "gRPC boundary"
+  - value: "Incremental"
+    label: "Rollout model"
 ---
 
 import Mermaid from '../../components/Mermaid.astro';
@@ -32,7 +32,7 @@ import { tuxedoTpcallSequenceMermaid } from '../../diagrams/tuxedo-tpcall-sequen
 
 ## The problem
 
-A Tier-1 European telecom carrier was running its core backend on Oracle Tuxedo —
+A large telecom backend was running its core services on Oracle Tuxedo —
 a battle-tested transaction monitor that has carried billing, provisioning, and
 account-management workloads for some operators for over two decades. Tuxedo is
 genuinely good at the job it was designed for, but the cost surface had drifted
@@ -45,14 +45,11 @@ Three problems compound:
   fixed-width, position-encoded blobs that are basically untyped on the wire.
   Wanting to write a new service in Go or Rust, or wire one into Kafka, means
   writing a translation layer for every interaction.
-- **A licensing footprint that scales with cores.** Industry analysts publish
-  Oracle Tuxedo at roughly **$60,000 per Oracle processor** list price plus the
-  standard 22% annual support fee, with per-processor add-ons for management
-  (TSAM ~$14K), web access (SALT ~$12K), and Java integration (Jolt ~$9K). See
-  the [Oracle Technology Global Price List](https://www.oracle.com/corporate/pricing/technology-price-list.pdf)
-  and [Redress Compliance's Tuxedo licensing guide](https://redresscompliance.com/oracle-tuxedo-licensing-the-ultimate-guide/).
-  At Tier-1 carrier scale this is comfortably a multi-million-dollar annual
-  dependency before you write a single line of code.
+- **A platform dependency that shapes every decision.** Tuxedo is not just a
+  library in this kind of system; it influences runtime topology, language
+  choices, operational practices, and migration economics. Any replacement path
+  has to reduce that coupling gradually instead of pretending the old surface
+  can disappear in one release.
 - **No clean path to anything modern.** Streaming events into Kafka, exposing
   services to a service mesh, deploying alongside Kubernetes-shaped workloads —
   every one of these wants to talk to a typed RPC, not a flattened-buffer
@@ -70,17 +67,13 @@ impressive than the alternative.
 I designed and shipped a **migration framework** — a generic protocol shim, a
 Lex/Yacc transpiler, an in-house orchestrator, and a runtime that any
 Tuxedo-shaped service can drop into. We validated it end-to-end on one
-production service as a proof of concept. The framework is now being adopted by
-**CK Hutchison's [Three UK](https://www.amdocs.com/news-press/three-uk-expands-strategic-collaboration-amdocs-provide-consumers-next-generation-digital)
-and [Three Ireland](http://www.irishexaminer.com/business/arid-20387496.html)**
-for fleet-wide rollouts, each at their own pace and against the quirks of their
-own deployment.
+production service as a proof of concept, then shaped it for broader rollout
+across carrier deployments with different operational constraints.
 
-That framing — framework + POC + adopters — is the real shape of the work.
+That framing — framework + POC + rollout path — is the real shape of the work.
 Calling it "migrated a backend" would have been an overclaim. Calling it a
-framework being rolled out across multiple Tier-1 carriers is **a
-platform-engineering story instead of a single-project story**, and it's
-defensible from the public Amdocs press record alone.
+framework for incremental modernization is the real story: reusable platform
+work instead of a one-off rewrite.
 
 ## The transpiler
 
@@ -428,29 +421,18 @@ adopter wants HAProxy &rarr; Envoy, Nomad &rarr; Kubernetes, or Consul &rarr;
 etcd, the swap is straightforward because nothing in the framework depends on
 the specific tool. It depends on the **role** each tool plays.
 
-## What shipped, who's using it
+## What shipped
 
 The POC was a single production service migrated end-to-end. Same business
 logic, same data flows, same database — but now reachable over gRPC,
 observable through the new mesh, deployable through Nomad and the
 orchestrator, and (newly) able to publish into Kafka.
 
-That POC is the proof. The carrier sign-off was: *if this works for one service
-without changing business code, it works for the rest.*
-
-Public press confirms the adopters. Both are CK Hutchison subsidiaries:
-
-- **Three UK** — the
-  [Amdocs strategic-collaboration announcement (Aug 2021)](https://www.amdocs.com/news-press/three-uk-expands-strategic-collaboration-amdocs-provide-consumers-next-generation-digital)
-  and the
-  [end-to-end digital-transformation completion writeup](https://www.thefastmode.com/technology-solutions/24812-three-uk-amdocs-complete-e2e-digital-transformation-project)
-  cover the broader engagement.
-- **Three Ireland** — public reporting via the
-  [Irish Examiner](http://www.irishexaminer.com/business/arid-20387496.html)
-  on the Amdocs partnership.
-
-The framework is the connective tissue both rollouts run on. Each carrier's
-system has slightly different quirks; the framework adapts without changing.
+That POC is the proof. The rollout argument was: *if this works for one service
+without changing business code, it can become the path for the rest.* Different
+carrier deployments have different operational constraints, so the framework had
+to adapt around the service shape instead of forcing every system into one
+global migration plan.
 
 <PullQuote attribution="The framing that survived every review.">
   If this works for one service without changing business code, it works for the
@@ -462,10 +444,10 @@ system has slightly different quirks; the framework adapts without changing.
 A few things that turned out to matter more than I expected.
 
 **Honest framing scales better than aspirational framing.** A reusable framework
-adopted by multiple Tier-1 carriers is a stronger signal than "migrated a
-backend." It also survives a hostile interview question: *"Did you really
-migrate the whole thing?"* No — I built the framework that is migrating it.
-Here's the POC. Here are the adopters.
+validated on a production service is a stronger signal than "migrated a
+backend" if the full fleet migration is still underway. It also survives a
+hostile interview question: *"Did you really migrate the whole thing?"* No — I
+built the framework and proved the path.
 
 **Migrate the protocol surface, not the application layer.** The reason this
 finished in months instead of years is that no one had to re-litigate billing
@@ -486,7 +468,6 @@ Consul. Consul doesn't know about Nomad. Consul Template is the only piece that
 spans two — and it's a thin daemon. Each component is individually swappable
 and operationally calm. The framework outlives any single tool choice.
 
-**The economics live in the licensing, not the engineering.** Tuxedo's cost is
-recurring and per-processor. The migration's payoff is removing the recurring
-licensing surface, not the one-time engineering cost. That framing changes how
-the program gets evaluated by everyone above the engineering org.
+**The migration value is bigger than the code diff.** The technical payoff is a
+typed service boundary. The organizational payoff is giving the program a
+repeatable way to modernize without reopening every piece of business logic.

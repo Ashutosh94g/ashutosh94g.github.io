@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import JsonLd from "../components/JsonLd.astro";
 import Hero from "../components/Hero.astro";
 import About from "../components/sections/About.astro";
+import HowIWork from "../components/sections/HowIWork.astro";
 import Projects from "../components/sections/Projects.astro";
 import Skills from "../components/sections/Skills.astro";
 import Experience from "../components/sections/Experience.astro";
@@ -42,6 +43,9 @@ const personSchema = {
   knowsAbout: [
     "gRPC",
     "Protocol Buffers",
+    "Backend Engineering",
+    "Platform Engineering",
+    "Legacy Modernization",
     "Distributed Systems",
     "Service Discovery",
     "HAProxy",
@@ -62,7 +66,7 @@ const personSchema = {
     "TIBCO WebFOCUS",
   ],
   description:
-    "Backend & platform engineer at Amdocs working on Tier-1 telecom platform modernisation, distributed systems, and an internal AI development platform.",
+    "Software developer at Amdocs focused on backend platforms, legacy modernization, parser-driven automation, and practical AI developer workflows.",
 };
 
 const websiteSchema = {
@@ -85,6 +89,7 @@ const websiteSchema = {
 
   <Hero />
   <About />
+  <HowIWork />
   <Projects />
   <Skills />
   <Experience />

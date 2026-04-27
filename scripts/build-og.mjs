@@ -27,17 +27,17 @@ const cases = [
     slug: 'tuxedo-grpc',
     accent: 'indigo',
     eyebrow: 'CASE STUDY 02 \u00B7 PLATFORM ENGINEERING',
-    title: 'Tuxedo \u2192 gRPC: a migration framework',
-    subtitle: 'for Tier-1 telecom carriers',
+    title: 'Tuxedo \u2192 gRPC: modernizing',
+    subtitle: 'legacy RPC safely',
     tag: 'Lex/Yacc \u00B7 Protocol Shim \u00B7 HAProxy + Consul + Nomad',
   },
   {
     slug: 'atlas-knowledge-engine',
     accent: 'amber',
     eyebrow: 'CASE STUDY 01 \u00B7 KNOWLEDGE ENGINEERING',
-    title: 'Atlas: a knowledge engine for an',
-    subtitle: '18M-line legacy backend',
-    tag: '5-phase pipeline \u00B7 1,200+ atoms \u00B7 99.6% truth-grounded',
+    title: 'AI knowledge layer',
+    subtitle: 'for legacy code',
+    tag: 'Layered context \u00B7 source-backed claims \u00B7 CLI-first workflow',
   },
   {
     slug: 'compiler-driven-quality',
@@ -106,16 +106,16 @@ function defaultSvg() {
   </g>
 
   <text x="80" y="270" font-family="Source Serif 4, Georgia, serif" font-size="60" font-weight="600" fill="#f5f5f7" letter-spacing="-1.5">
-    I build platform infrastructure
+    I build reliable backend platforms
   </text>
   <text x="80" y="345" font-family="Source Serif 4, Georgia, serif" font-size="60" font-weight="600" fill="url(#headline-grad)" letter-spacing="-1.5">
-    for Tier-1 telecom carriers.
+    and developer tools.
   </text>
 
   <line x1="80" y1="410" x2="220" y2="410" stroke="#a78bfa" stroke-width="3"/>
 
   <text x="80" y="455" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="400" fill="#c8c8d1">
-    Tuxedo &#8594; gRPC framework &#183; AI development platform &#183; parser-driven tooling
+    Backend modernization &#183; AI workflows &#183; parser-driven tooling
   </text>
 
   <text x="80" y="560" font-family="JetBrains Mono, Consolas, monospace" font-size="18" font-weight="500" fill="#6e6e76" letter-spacing="3">

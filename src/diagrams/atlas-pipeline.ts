@@ -17,7 +17,7 @@ export const atlasPipelineMermaid = `flowchart LR
       cr["CR → HLD → LLD<br/>→ impact → tests"]
     end
 
-    src["Legacy backend<br/>~18M lines<br/>C / Pro*C / shell"] --> Phase1
+    src["Legacy backend<br/>large code surface<br/>C / Pro*C / shell"] --> Phase1
     Phase1 --> Phase2 --> Phase3 --> Phase4 --> Phase5
     L1 --- L4 --- L7
 

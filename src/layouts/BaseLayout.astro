@@ -20,7 +20,7 @@ interface Props {
 
 const SITE_NAME = 'Ashutosh Modi';
 const SITE_DEFAULT_DESCRIPTION =
-  "Backend & platform engineer at Amdocs. Tuxedo \u2192 gRPC migration framework rolling out across Three UK and Three Ireland, an internal AI development platform on Cursor, and parser-driven tooling that turns runtime defects into compile-time errors.";
+  "Ashutosh Modi is a software developer focused on backend platforms, legacy modernization, parser-driven automation, and practical AI developer workflows.";
 
 const {
   title,
@@ -30,7 +30,7 @@ const {
   pageType = 'website',
 } = Astro.props;
 
-const fullTitle = !title || title === SITE_NAME ? `${SITE_NAME} \u2014 Software Developer & Platform Engineer` : `${title} \u2014 ${SITE_NAME}`;
+const fullTitle = !title || title === SITE_NAME ? `${SITE_NAME} \u2014 Software Developer` : `${title} \u2014 ${SITE_NAME}`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const ogImageUrl = new URL(ogImage, Astro.site).toString();
 ---

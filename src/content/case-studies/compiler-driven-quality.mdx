@@ -1,8 +1,8 @@
 ---
 title: "Compiler-driven code quality"
 cardTitle: "Compiler-driven code quality"
-summary: "Two parser-driven Lex/Yacc tools that turned legacy-code problems into compile-time problems: a C/C++ prototype generator that catches 80% of would-be production defects at build time, and a WebFOCUS auto-converter that cut per-script migration from 48 hours to 40 minutes across 500+ scripts."
-cardSummary: "Two Lex/Yacc compilers that turn legacy-code problems into compile-time problems. C/C++ prototype generator catches 80% of would-be production defects at build. WebFOCUS auto-converter: 48 hrs/script \u2192 40 mins, 500+ scripts."
+summary: "Two parser-driven Lex/Yacc tools that turned legacy-code problems into checked migration and build-time feedback: a C/C++ prototype generator and a WebFOCUS auto-converter for moving reporting logic into Python."
+cardSummary: "Two Lex/Yacc compilers for developer leverage: one catches C/C++ signature drift at build time, the other converts legacy WebFOCUS reporting scripts into Python."
 role: "Designer & primary engineer"
 dates: "Jun 2023 — Present"
 tags: ["Lex/Yacc", "C/C++", "Python", "Pandas", "Compilers"]
@@ -49,8 +49,8 @@ scale.** At Amdocs, an in-house Python-on-Pandas reporting library called
 **XFocus** replaces [TIBCO WebFOCUS](https://www.tibco.com/) for telecom
 business reporting. The catch: the carrier already has hundreds of WebFOCUS
 scripts written over the years. A careful hand-conversion takes around 48
-hours per script. Multiply by 500+ scripts and you have a project that funds
-itself in licensing savings but never finishes.
+hours per script. Multiply by 500+ scripts and you have a project with clear
+strategic value that still risks never finishing.
 
 Different surface, same underneath. Both problems are about **discovering
 machine-checkable structure in code that wasn't designed to be
@@ -179,8 +179,8 @@ January 2021](https://www.techtarget.com/searchbusinessanalytics/news/252494703/
 now under Cloud Software Group) — has been generating telecom business
 reports for some carriers for over a decade. The team had built **XFocus**, an
 in-house Pandas / NumPy library that does the same job in Python with no
-licensing footprint. Switching saves real money. The blocker was migrating
-the existing 500+ scripts without spending a year on each one.
+vendor-specific runtime dependency. The blocker was migrating the existing
+500+ scripts without spending a year on each one.
 
 The numbers everyone agreed on: hand-converting a script took roughly **48
 hours** of careful work — read the WebFOCUS code, understand what it
@@ -240,7 +240,7 @@ bulk.
 <StatCallout
   to="500+ scripts"
   label="Migrated through the converter"
-  note="Eliminates a recurring multi-million-dollar enterprise reporting licensing surface. The economics shift; the project completes."
+  note="Moves legacy reporting logic into a Python surface the engineering team can inspect, test, and automate."
   accent="emerald"
 />
 
