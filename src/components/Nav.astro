@@ -23,39 +23,32 @@ const isHome = path === "/" || path === "";
     class="site-container nav-layout"
     aria-label="Primary"
   >
-    <div class="nav-top">
-      <a
-        href="/"
-        class="nav-brand"
-        aria-current={isHome ? "page" : undefined}
-      >
-        Ashutosh Modi
-      </a>
+    <a
+      href="/"
+      class="nav-brand"
+      aria-current={isHome ? "page" : undefined}
+    >
+      Ashutosh Modi
+    </a>
 
-      <a
-        href="/resume.pdf"
-        target="_blank"
-        rel="noopener"
-        class="nav-resume btn-cta btn-cta-secondary text-sm"
-        style="padding: 0.5rem 0.9rem; border-radius: 0.6rem; font-size: 0.85rem;"
-      >
-        <svg
-          aria-hidden="true"
-          class="w-3.5 h-3.5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M12 3v12" />
-          <path d="m6 9 6 6 6-6" />
-          <path d="M5 21h14" />
-        </svg>
-        Resume
-      </a>
-    </div>
+    <details class="nav-mobile-menu">
+      <summary class="nav-menu-toggle">
+        Menu
+      </summary>
+
+      <ul class="nav-mobile-links">
+        {links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="nav-link"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
 
     <ul class="nav-links">
       {links.map((link) => (
@@ -69,5 +62,29 @@ const isHome = path === "/" || path === "";
         </li>
       ))}
     </ul>
+
+    <a
+      href="/resume.pdf"
+      target="_blank"
+      rel="noopener"
+      class="nav-resume btn-cta btn-cta-secondary text-sm"
+      style="padding: 0.5rem 0.9rem; border-radius: 0.6rem; font-size: 0.85rem;"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-3.5 h-3.5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M12 3v12" />
+        <path d="m6 9 6 6 6-6" />
+        <path d="M5 21h14" />
+      </svg>
+      Resume
+    </a>
   </nav>
 </header>
