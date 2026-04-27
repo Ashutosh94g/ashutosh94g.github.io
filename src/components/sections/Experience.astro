@@ -1,0 +1,127 @@
+---
+/**
+ * Experience — vertical timeline. Single Amdocs entry with five bullets
+ * pulled from Resume\resume.tex.
+ */
+
+const role = {
+  company: "Amdocs",
+  title: "Software Developer \u2014 Telecom Backend Platform",
+  location: "Gurgaon, India",
+  start: "Sep 2022",
+  end: "Present",
+  url: "https://www.amdocs.com/",
+};
+
+const bullets = [
+  {
+    headline: "Tuxedo \u2192 gRPC migration framework",
+    body: "Designed and shipped a generic protocol shim translating Tuxedo\u2019s flattened buffers into strongly-typed Protobuf with <strong>zero changes to business code</strong>. Validated as POC on a production service; rolling out across CK Hutchison\u2019s <strong>Three UK</strong> and <strong>Three Ireland</strong>, removing a multi-million-dollar Oracle dependency.",
+    tag: "2025",
+  },
+  {
+    headline: "Day-to-day technical execution",
+    body: "Drove technical execution for a <strong>4\u20135 engineer team</strong> on a Tier-1 platform-modernisation program since <strong>Dec 2025</strong> &mdash; code review, unblocking, and the engineering manager\u2019s primary technical interface. Informal capacity, on track for formal title.",
+    tag: "Lead",
+  },
+  {
+    headline: "WebFOCUS replacement",
+    body: "Replaced <strong>TIBCO WebFOCUS</strong> reporting with an in-house Python library plus a Lex/Yacc auto-converter for <strong>500+</strong> legacy scripts, eliminating <strong>millions in annual licensing per client deployment</strong>.",
+    tag: "Platform",
+  },
+  {
+    headline: "C/C++ stewardship",
+    body: "Hardened a long-lived C/C++ codebase: guard-clause refactors reduced potential vulnerabilities by <strong>30%</strong>, a build-time prototype generator catches <strong>80%</strong> of would-be production defects, and <strong>95%</strong> of legacy compile-time warnings were resolved.",
+    tag: "Quality",
+  },
+  {
+    headline: "Internal AI development platform",
+    body: "Owned company-wide rollout of <strong>Cursor</strong> as the AI development platform &mdash; team knowledge base, agent skills, workflow rules, plus reusable Vim / VS Code snippets and shell automation. Cut team toolchain friction by <strong>50%+</strong>.",
+    tag: "AI",
+  },
+];
+
+const awards = [
+  { label: "Pinnacle Performer", year: "Feb 2026" },
+  { label: "Employee of the Month", year: "Feb 2025 + Feb 2026" },
+];
+---
+
+<section
+  id="experience"
+  class="relative scroll-mt-20 py-28 sm:py-36 border-b border-[var(--border)] overflow-hidden"
+  aria-labelledby="experience-heading"
+>
+  <!-- Soft underpaint -->
+  <div
+    class="absolute bottom-0 right-1/3 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none"
+    style="background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative site-container">
+    <header class="reveal mb-14 max-w-3xl">
+      <p class="eyebrow mb-3">04 / Experience</p>
+      <h2 id="experience-heading" class="display-2">
+        Three and a half years, one company, deep work.
+      </h2>
+    </header>
+
+    <div class="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-12 lg:gap-20 items-start">
+      <!-- Left rail: company card -->
+      <aside class="reveal lg:sticky lg:top-24">
+        <div class="rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.015)] p-7 backdrop-blur-sm">
+          <p class="eyebrow mb-3">Currently</p>
+          <h3 class="font-serif text-2xl font-semibold mb-1">
+            <a
+              href={role.url}
+              target="_blank"
+              rel="noopener"
+              class="text-[var(--fg)] no-underline hover:text-[var(--link)]"
+            >
+              {role.company}
+            </a>
+          </h3>
+          <p class="text-sm text-[var(--fg-muted)] mb-4">{role.title}</p>
+          <div class="flex flex-wrap gap-x-5 gap-y-2 text-xs font-mono uppercase tracking-[0.18em] text-[var(--fg-faint)] mb-6">
+            <span>{role.location}</span>
+            <span>{role.start} &rarr; {role.end}</span>
+          </div>
+          <hr class="border-[var(--border)] my-5" />
+          <p class="eyebrow mb-3">Recognition</p>
+          <ul class="list-none m-0 p-0 space-y-2">
+            {awards.map((a) => (
+              <li class="flex items-center justify-between gap-4 text-sm">
+                <span class="text-[var(--fg)]">{a.label}</span>
+                <span class="font-mono text-xs text-[var(--fg-faint)]">{a.year}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Right rail: bullet timeline -->
+      <ol class="relative list-none m-0 p-0 pl-8">
+        <span class="timeline-line" aria-hidden="true"></span>
+        {bullets.map((b, i) => (
+          <li
+            class="reveal relative mb-10 last:mb-0"
+            style={`transition-delay: ${i * 90}ms`}
+          >
+            <span class="timeline-dot" aria-hidden="true"></span>
+            <div class="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
+              <h3 class="font-serif text-lg font-semibold text-[var(--fg)]">
+                {b.headline}
+              </h3>
+              <span class="pill">{b.tag}</span>
+            </div>
+            <p
+              class="text-[var(--fg-muted)] leading-relaxed text-[0.96rem] m-0"
+              set:html={b.body}
+            ></p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>

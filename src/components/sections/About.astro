@@ -1,0 +1,91 @@
+---
+/**
+ * About — concise first-person bio anchored on the work.
+ *
+ * Layout: two columns at lg+ (text left, vertical metadata strip right).
+ * Single column on mobile. No portrait by default — the work is the brand.
+ */
+
+const facts = [
+  { label: "Based in", value: "Gurgaon, India" },
+  { label: "At", value: "Amdocs (Sep 2022 \u2192 present)" },
+  { label: "Domain", value: "Telecom backend platform" },
+  { label: "Recognition", value: "Pinnacle Performer, Feb 2026" },
+  { label: "Available for", value: "Senior backend & platform roles" },
+];
+---
+
+<section
+  id="about"
+  class="relative scroll-mt-20 py-28 sm:py-36 border-b border-[var(--border)] overflow-hidden"
+  aria-labelledby="about-heading"
+>
+  <!-- Soft underpaint -->
+  <div
+    class="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full opacity-20 blur-3xl pointer-events-none"
+    style="background: radial-gradient(circle, #6366f1 0%, transparent 70%);"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative site-container">
+    <div class="reveal mb-14">
+      <p class="eyebrow mb-3">01 / About</p>
+      <h2 id="about-heading" class="display-2 max-w-3xl">
+        Backend engineer building <span class="gradient-text">platform infrastructure</span> for telecom systems that have to keep working.
+      </h2>
+    </div>
+
+    <div class="grid lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] gap-12 lg:gap-20 items-start">
+      <!-- Bio column -->
+      <div class="reveal reveal-delay-1 prose max-w-none">
+        <p>
+          I work on a 20-year-old C / Pro*C / shell backend at <strong>Amdocs</strong>
+          that runs through a layer of HAProxy, Consul, and Nomad on top of
+          legacy Tuxedo, and powers Tier-1 European carriers. My work is
+          mostly about modernising it without breaking it &mdash; a
+          <strong>Tuxedo &rarr; gRPC migration framework</strong> rolling out
+          across CK Hutchison&rsquo;s Three UK and Three Ireland; an
+          <strong>internal AI development platform</strong> on Cursor that
+          gives teams agent workflows over an 18M-line codebase; and
+          parser-driven tooling that turns runtime defects into compile-time
+          errors.
+        </p>
+        <p>
+          Since December 2025 I&rsquo;ve been the day-to-day technical lead
+          for a 4&ndash;5 engineer team on a platform-modernisation program
+          (informal capacity) &mdash; code review, unblocking, and the
+          engineering manager&rsquo;s primary technical interface. The work
+          was recognised internally with <strong>Pinnacle Performer</strong>
+          (Feb 2026) and <strong>Employee of the Month</strong> twice.
+        </p>
+        <p>
+          I care about systems that age well, parsers as a productivity
+          multiplier, and getting AI agents to actually compose with humans
+          on production code.
+        </p>
+      </div>
+
+      <!-- Vertical metadata strip -->
+      <aside class="reveal reveal-delay-2 lg:sticky lg:top-24">
+        <div class="rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.015)] p-6 sm:p-7 backdrop-blur-sm">
+          <p class="eyebrow mb-5">Quick facts</p>
+          <dl class="grid gap-4">
+            {facts.map((f) => (
+              <div class="grid grid-cols-[auto_1fr] gap-x-4 items-baseline">
+                <dt class="text-xs font-mono uppercase tracking-[0.18em] text-[var(--fg-faint)]">
+                  {f.label}
+                </dt>
+                <dd class="text-sm text-[var(--fg)]">{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <hr class="my-5 border-[var(--border)]" />
+          <p class="text-xs text-[var(--fg-faint)] leading-relaxed">
+            Also: B.Tech CS, Guru Nanak Dev University &middot; Placement
+            Head &middot; Google Workshop winner.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>

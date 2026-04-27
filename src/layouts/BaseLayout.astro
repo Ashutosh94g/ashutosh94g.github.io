@@ -4,6 +4,7 @@ import '@fontsource-variable/jetbrains-mono';
 import '@fontsource/source-serif-4/400.css';
 import '@fontsource/source-serif-4/600.css';
 import '@fontsource/source-serif-4/700.css';
+import '@fontsource/source-serif-4/400-italic.css';
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 import Nav from '../components/Nav.astro';
@@ -19,7 +20,7 @@ interface Props {
 
 const SITE_NAME = 'Ashutosh Modi';
 const SITE_DEFAULT_DESCRIPTION =
-  'Backend engineer at Amdocs. I build platform infrastructure for Tier-1 telecom carriers — distributed systems, parser-driven tooling, and an internal AI development platform.';
+  "Backend & platform engineer at Amdocs. Tuxedo \u2192 gRPC migration framework rolling out across Three UK and Three Ireland, an internal AI development platform on Cursor, and parser-driven tooling that turns runtime defects into compile-time errors.";
 
 const {
   title,
@@ -29,13 +30,13 @@ const {
   pageType = 'website',
 } = Astro.props;
 
-const fullTitle = !title || title === SITE_NAME ? SITE_NAME : `${title} — ${SITE_NAME}`;
+const fullTitle = !title || title === SITE_NAME ? `${SITE_NAME} \u2014 Software Developer & Platform Engineer` : `${title} \u2014 ${SITE_NAME}`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const ogImageUrl = new URL(ogImage, Astro.site).toString();
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -49,12 +50,12 @@ const ogImageUrl = new URL(ogImage, Astro.site).toString();
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-    <link rel="mask-icon" href="/favicon-mono.svg" color="#6366f1" />
+    <link rel="mask-icon" href="/favicon-mono.svg" color="#8b5cf6" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href={canonicalUrl} />
 
-    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#05070d" />
+    <meta name="color-scheme" content="dark" />
 
     <meta name="format-detection" content="telephone=no" />
 
@@ -68,29 +69,14 @@ const ogImageUrl = new URL(ogImage, Astro.site).toString();
     <meta property="og:image" content={ogImageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={`${SITE_NAME} — ${description}`} />
+    <meta property="og:image:alt" content={`${SITE_NAME} \u2014 ${description}`} />
     <meta property="og:locale" content="en_US" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
-    <meta name="twitter:image:alt" content={`${SITE_NAME} — ${description}`} />
-
-    <script is:inline>
-      (function () {
-        try {
-          const stored = localStorage.getItem('theme');
-          const system = window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light';
-          const theme = stored === 'light' || stored === 'dark' ? stored : system;
-          document.documentElement.dataset.theme = theme;
-        } catch (e) {
-          /* private mode or storage disabled */
-        }
-      })();
-    </script>
+    <meta name="twitter:image:alt" content={`${SITE_NAME} \u2014 ${description}`} />
 
     <ClientRouter fallback="swap" />
 
@@ -108,5 +94,12 @@ const ogImageUrl = new URL(ogImage, Astro.site).toString();
       <slot />
     </main>
     <Footer />
+
+    <script>
+      import '../scripts/reveal.ts';
+      import '../scripts/nav-scroll.ts';
+      import '../scripts/magnetic.ts';
+      import '../scripts/tile-cursor.ts';
+    </script>
   </body>
 </html>

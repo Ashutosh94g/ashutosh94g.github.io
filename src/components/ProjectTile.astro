@@ -1,0 +1,149 @@
+---
+/**
+ * ProjectTile — a single project card.
+ *
+ * Animations: hover lifts the tile, the conic gradient border (.tile::before)
+ * starts rotating, and the radial spotlight (.tile::after) follows the
+ * cursor (driven by tile-cursor.ts in BaseLayout).
+ *
+ * Visual variant: `pattern` controls which subtle texture sits behind the
+ * content (mesh / circuit / lines).
+ */
+
+interface Props {
+  href?: string;
+  external?: boolean;
+  index: string;
+  title: string;
+  status: string;
+  dates: string;
+  summary: string;
+  bullets?: string[];
+  tech: string[];
+  accent?: "indigo" | "violet" | "magenta" | "cyan";
+  pattern?: "mesh" | "circuit" | "lines";
+  span?: "wide" | "default";
+}
+
+const {
+  href,
+  external = false,
+  index,
+  title,
+  status,
+  dates,
+  summary,
+  bullets = [],
+  tech,
+  accent = "violet",
+  pattern = "mesh",
+  span = "default",
+} = Astro.props;
+
+const accentMap: Record<NonNullable<Props["accent"]>, { from: string; to: string }> = {
+  indigo: { from: "#6366f1", to: "#8b5cf6" },
+  violet: { from: "#8b5cf6", to: "#ec4899" },
+  magenta: { from: "#ec4899", to: "#f59e0b" },
+  cyan: { from: "#06b6d4", to: "#6366f1" },
+};
+
+const colors = accentMap[accent];
+const Tag = href ? "a" : "div";
+---
+
+<Tag
+  href={href}
+  {...(external ? { target: "_blank", rel: "noopener" } : {})}
+  class={`tile group block no-underline text-[var(--fg)] p-7 sm:p-9 ${span === "wide" ? "md:col-span-3" : ""}`}
+  style={`--accent-from:${colors.from}; --accent-to:${colors.to};`}
+>
+  <!-- Subtle pattern -->
+  <div
+    class={`absolute inset-0 pointer-events-none opacity-70 ${
+      pattern === "mesh"
+        ? "pattern-mesh"
+        : pattern === "circuit"
+          ? "pattern-circuit"
+          : "pattern-lines"
+    }`}
+    aria-hidden="true"
+  ></div>
+
+  <!-- Accent corner glow -->
+  <div
+    class="absolute -top-20 -right-20 w-72 h-72 rounded-full pointer-events-none opacity-0 group-hover:opacity-50 transition-opacity duration-500 blur-3xl"
+    style={`background: radial-gradient(circle, ${colors.from}, transparent 70%);`}
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative flex flex-col h-full gap-6">
+    <!-- Header row -->
+    <div class="flex items-start justify-between gap-6">
+      <div>
+        <p class="eyebrow mb-3 flex items-center gap-2">
+          <span>{index}</span>
+          <span class="text-[var(--fg-faint)]">/</span>
+          <span style={`color: ${colors.from};`}>{status}</span>
+        </p>
+        <h3
+          class={`font-serif font-semibold tracking-tight text-[var(--fg)] ${
+            span === "wide" ? "text-3xl sm:text-4xl" : "text-2xl sm:text-[1.65rem]"
+          }`}
+        >
+          {title}
+        </h3>
+        <p class="mt-2 text-sm font-mono text-[var(--fg-faint)]">{dates}</p>
+      </div>
+      {href && (
+        <span
+          class="shrink-0 mt-1 inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-strong)] text-[var(--fg-muted)] group-hover:text-[var(--fg)] group-hover:border-[var(--fg)] transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          aria-hidden="true"
+        >
+          <svg
+            class="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m9 5 7 7-7 7" />
+          </svg>
+        </span>
+      )}
+    </div>
+
+    <!-- Summary -->
+    <p class="text-[var(--fg-muted)] leading-relaxed">{summary}</p>
+
+    <!-- Bullets -->
+    {bullets.length > 0 && (
+      <ul class="text-sm text-[var(--fg-muted)] space-y-2 list-none p-0 m-0">
+        {bullets.map((b) => (
+          <li class="relative pl-5 leading-relaxed">
+            <span
+              class="absolute left-0 top-2.5 w-1.5 h-1.5 rounded-full"
+              style={`background: linear-gradient(135deg, ${colors.from}, ${colors.to});`}
+              aria-hidden="true"
+            ></span>
+            <Fragment set:html={b} />
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <!-- Tech chips -->
+    <div class="mt-auto flex flex-wrap gap-2 pt-2">
+      {tech.map((t) => (
+        <span
+          class="tech-chip"
+          style={`--chip-color: ${colors.from};`}
+        >
+          <span class="tech-dot" aria-hidden="true"></span>
+          {t}
+        </span>
+      ))}
+    </div>
+  </div>
+</Tag>

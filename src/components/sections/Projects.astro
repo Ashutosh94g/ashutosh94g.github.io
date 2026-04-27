@@ -1,0 +1,113 @@
+---
+/**
+ * Projects — bento layout: one wide hero tile + 3 normal tiles.
+ *
+ * Each tile links to its MDX case study where one exists. Status, dates,
+ * and tech chips come straight from the resume.
+ */
+import ProjectTile from "../ProjectTile.astro";
+
+const projects = [
+  {
+    index: "01",
+    title: "Tuxedo \u2192 gRPC Migration Framework",
+    status: "In rollout",
+    dates: "Jun 2025 \u2192 Nov 2025",
+    href: "/case-studies/tuxedo-grpc/",
+    summary:
+      "A generic protocol shim that translates Oracle Tuxedo\u2019s flattened buffers into strongly-typed Protobuf \u2014 with zero changes to twenty years of business logic. Built on HAProxy + Consul + Nomad + Consul Template + Kafka.",
+    bullets: [
+      "Validated end-to-end as a POC on a production service.",
+      "Currently being rolled out across CK Hutchison\u2019s <strong>Three UK</strong> and <strong>Three Ireland</strong>.",
+      "Removes a multi-million-dollar Oracle dependency.",
+    ],
+    tech: ["gRPC", "Protobuf", "HAProxy", "Consul", "Nomad", "Kafka"],
+    accent: "violet" as const,
+    pattern: "circuit" as const,
+    span: "wide" as const,
+  },
+  {
+    index: "02",
+    title: "Internal AI Development Platform",
+    status: "Live & expanding",
+    dates: "Aug 2025 \u2192 present",
+    href: "/case-studies/atlas-knowledge-engine/",
+    summary:
+      "Cursor rolled out company-wide on the enterprise license: a team knowledge base, agent skills, and workflow rules \u2014 all authored from scratch. A layered context-loading strategy lets agents reason over multi-MB telecom codebases without losing track of conventions.",
+    tech: ["Cursor", "Agent workflows", "Knowledge engineering"],
+    accent: "indigo" as const,
+    pattern: "mesh" as const,
+  },
+  {
+    index: "03",
+    title: "XFocus",
+    status: "Replacing licensed software",
+    dates: "Jul 2024 \u2192 present",
+    href: "/case-studies/compiler-driven-quality/",
+    summary:
+      "Declarative Python library on Pandas/NumPy that replaces TIBCO WebFOCUS for telecom business reporting, plus a Lex/Yacc compiler that auto-converts 500+ legacy scripts. Per-script migration time: 48 hours \u2192 40 minutes.",
+    tech: ["Python", "Pandas", "NumPy", "Lex/Yacc"],
+    accent: "magenta" as const,
+    pattern: "lines" as const,
+  },
+  {
+    index: "04",
+    title: "C/C++ Prototype Generator",
+    status: "Production",
+    dates: "Jun 2023 \u2192 Sep 2023",
+    href: "/case-studies/compiler-driven-quality/",
+    summary:
+      "A Lex/Yacc compiler that scans every C source at build time and generates function prototypes, integrating them via preprocessor guards across 500+ files. Catches 80% of would-be production defects at compile time.",
+    tech: ["Lex/Yacc", "C/C++", "Shell"],
+    accent: "cyan" as const,
+    pattern: "circuit" as const,
+  },
+];
+---
+
+<section
+  id="projects"
+  class="relative scroll-mt-20 py-28 sm:py-36 border-b border-[var(--border)] overflow-hidden"
+  aria-labelledby="projects-heading"
+>
+  <!-- Soft underpaint -->
+  <div
+    class="absolute top-1/3 -left-32 w-[600px] h-[600px] rounded-full opacity-15 blur-3xl pointer-events-none"
+    style="background: radial-gradient(circle, #ec4899 0%, transparent 70%);"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative site-container">
+    <header class="reveal mb-16 max-w-3xl">
+      <p class="eyebrow mb-3">02 / Selected work</p>
+      <h2 id="projects-heading" class="display-2 mb-4">
+        Four pieces of work that don&rsquo;t fit on a one-page resume.
+      </h2>
+      <p class="text-lg text-[var(--fg-muted)] leading-relaxed">
+        Each one digs into the problem, the mechanism, and what shipped
+        &mdash; with the architecture, the measured numbers, and what stayed
+        with me afterwards. Click through for the deep-dive.
+      </p>
+    </header>
+
+    <div class="grid md:grid-cols-3 gap-5 sm:gap-6">
+      {projects.map((p, i) => (
+        <div class={`reveal ${p.span === "wide" ? "md:col-span-3" : ""}`} style={`transition-delay: ${i * 80}ms`}>
+          <ProjectTile
+            index={p.index}
+            title={p.title}
+            status={p.status}
+            dates={p.dates}
+            href={p.href}
+            summary={p.summary}
+            bullets={p.bullets}
+            tech={p.tech}
+            accent={p.accent}
+            pattern={p.pattern}
+            span={p.span}
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,105 +1,37 @@
 ---
 const year = new Date().getFullYear();
-
-const social = [
-  { href: 'https://github.com/ashutosh94g', label: 'GitHub', external: true },
-  { href: 'https://www.linkedin.com/in/ashutosh94g/', label: 'LinkedIn', external: true },
-  { href: 'mailto:ashutosh94g@gmail.com', label: 'Email' },
-  { href: '/resume.pdf', label: 'Resume' },
-];
-
-const internal = [
-  { href: '/#case-studies', label: 'Case studies' },
-  { href: '/about/', label: 'About' },
-  { href: '/now/', label: 'Now' },
-  { href: '/writing/', label: 'Writing' },
-];
 ---
 
 <footer
-  class="relative border-t border-[var(--border)] mt-24 overflow-hidden"
+  class="relative border-t border-[var(--border)] overflow-hidden"
 >
-  <div class="absolute inset-0 dot-grid opacity-40 pointer-events-none" aria-hidden="true"></div>
+  <div
+    class="absolute inset-0 dot-grid opacity-30 pointer-events-none"
+    aria-hidden="true"
+  ></div>
 
   <div
-    class="relative max-w-6xl mx-auto px-5 sm:px-8 py-12 grid gap-10 sm:grid-cols-[2fr_1fr_1fr]"
+    class="relative site-container py-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-[var(--fg-faint)]"
   >
-    <div>
-      <p class="font-serif text-2xl font-semibold tracking-tight mb-2 m-0">
-        Ashutosh Modi
-      </p>
-      <p class="text-sm text-[var(--fg-muted)] leading-relaxed max-w-md m-0">
-        Backend engineer at Amdocs in Gurgaon, India. Platform infrastructure
-        for Tier-1 telecom carriers; parser-driven tooling; an internal AI
-        knowledge engine. Open to <a href="/about/">conversations about
-        platform &amp; AI infra work.</a>
-      </p>
-    </div>
-
-    <div>
-      <p
-        class="text-xs uppercase tracking-[0.18em] font-medium text-[var(--fg-subtle)] mb-3 m-0"
-      >
-        On this site
-      </p>
-      <ul class="list-none m-0 p-0 space-y-2">
-        {
-          internal.map((s) => (
-            <li>
-              <a
-                href={s.href}
-                class="text-sm text-[var(--fg-muted)] hover:text-[var(--link)] no-underline"
-              >
-                {s.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-
-    <div>
-      <p
-        class="text-xs uppercase tracking-[0.18em] font-medium text-[var(--fg-subtle)] mb-3 m-0"
-      >
-        Elsewhere
-      </p>
-      <ul class="list-none m-0 p-0 space-y-2">
-        {
-          social.map((s) => (
-            <li>
-              <a
-                href={s.href}
-                class="text-sm text-[var(--fg-muted)] hover:text-[var(--link)] no-underline"
-                {...(s.external ? { target: '_blank', rel: 'noopener' } : {})}
-              >
-                {s.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </div>
-
-  <div
-    class="relative border-t border-[var(--border)]"
-  >
-    <div
-      class="max-w-6xl mx-auto px-5 sm:px-8 py-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-xs text-[var(--fg-subtle)]"
-    >
-      <p class="m-0">
-        &copy; {year} Ashutosh Modi &middot; Built with <a
+    <p class="m-0 flex items-center gap-2.5">
+      <span
+        class="inline-flex items-center justify-center w-5 h-5 rounded text-white font-serif text-[10px] font-bold leading-none"
+        style="background: linear-gradient(135deg, #6366f1, #8b5cf6 50%, #ec4899);"
+        aria-hidden="true"
+      >am</span>
+      <span>&copy; {year} Ashutosh Modi</span>
+      <span aria-hidden="true">&middot;</span>
+      <span>Built with <a
           href="https://astro.build"
           rel="noopener"
           target="_blank"
-          class="text-[var(--fg-muted)] hover:text-[var(--link)]">Astro</a
-        > &middot; Deployed via GitHub Pages.
-      </p>
-      <p class="m-0">
-        Made in Gurgaon, India.
-        <span aria-hidden="true" class="ml-1">&#9728;</span>
-      </p>
-    </div>
+          class="text-[var(--fg-muted)] hover:text-[var(--link)]">Astro</a></span>
+      <span aria-hidden="true">&middot;</span>
+      <span>Deployed to GitHub Pages</span>
+    </p>
+
+    <p class="m-0 font-mono uppercase tracking-[0.18em]">
+      Made in Gurgaon, India
+    </p>
   </div>
 </footer>

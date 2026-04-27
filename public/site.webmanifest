@@ -1,13 +1,13 @@
 {
   "name": "Ashutosh Modi",
   "short_name": "AM",
-  "description": "Backend engineer building platform infrastructure for Tier-1 telecom carriers — distributed systems, parser-driven tooling, and an internal AI knowledge engine.",
+  "description": "Backend & platform engineer at Amdocs. Tuxedo \u2192 gRPC migration framework rolling out across Three UK and Three Ireland, an internal AI development platform on Cursor, and parser-driven tooling that turns runtime defects into compile-time errors.",
   "icons": [
     { "src": "/favicon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/favicon-32.png", "sizes": "32x32", "type": "image/png" }
   ],
-  "theme_color": "#0f172a",
-  "background_color": "#f8fafc",
+  "theme_color": "#05070d",
+  "background_color": "#05070d",
   "display": "standalone",
   "start_url": "/"
 }

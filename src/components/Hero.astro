@@ -1,192 +1,282 @@
 ---
-import StatusPill from './StatusPill.astro';
-import DotGrid from './DotGrid.astro';
-import Avatar from './Avatar.astro';
+/**
+ * Hero — full-viewport opening.
+ *
+ * Stack:
+ *   - Aurora background (CSS keyframes, GPU-only).
+ *   - Faint dot grid layered over it.
+ *   - Status pill with animated availability dot.
+ *   - Split-text headline reveal (per-word stagger, CSS keyframes only).
+ *   - Sub-headline + supporting copy faded in on a delay.
+ *   - Two CTAs: primary (gradient + magnetic), secondary (resume).
+ *   - Compact KPI strip pulled from the resume.
+ *   - Scroll cue at the bottom.
+ *
+ * No JS bundled here — magnetic.ts in BaseLayout handles the .magnetic
+ * elements globally.
+ */
+
+const headlineLine1 = ["Hi,", "I\u2019m", "Ashutosh", "Modi."] as const;
+const headlineLine2 = [
+  "I",
+  "build",
+  "platform",
+  "infrastructure",
+  "for",
+  "Tier-1",
+  "telecom",
+  "carriers.",
+] as const;
+
+const baseDelay = 200;
+const wordStep = 70;
+const line2Start = baseDelay + headlineLine1.length * wordStep + 80;
 
 const stats = [
-  { value: '18M+', label: 'Lines analyzed', caption: 'C / Pro*C / shell' },
-  { value: '500+', label: 'Scripts auto-converted', caption: 'WebFOCUS \u2192 XFocus' },
-  { value: '1,200+', label: 'Reasoning atoms', caption: 'Truth-grounded' },
-  { value: '99.6%', label: 'Atom verification', caption: 'Atlas pass rate' },
+  { value: "18M+", label: "Lines analysed", caption: "C / Pro*C / shell" },
+  { value: "500+", label: "Scripts auto-converted", caption: "WebFOCUS \u2192 XFocus" },
+  { value: "2", label: "Tier-1 carriers", caption: "Three UK + Three Ireland" },
+  { value: "3.5y", label: "At Amdocs", caption: "Sep 2022 \u2192 present" },
 ];
 ---
 
-<section class="relative overflow-hidden border-b border-[var(--border)]">
-  <!-- Vibrant animated mesh background -->
-  <div class="mesh-bg" aria-hidden="true"></div>
-  <DotGrid variant="sparse" fade="radial" />
+<section
+  class="hero relative overflow-hidden border-b border-[var(--border)]"
+  aria-labelledby="hero-heading"
+>
+  <!-- Animated aurora -->
+  <div class="aurora" aria-hidden="true">
+    <div class="aurora-blob"></div>
+  </div>
 
+  <!-- Faint dot grid texture -->
   <div
-    class="relative max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-20 sm:pt-24 sm:pb-28"
-  >
+    class="absolute inset-0 dot-grid pointer-events-none opacity-60 fade-edge-y"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Top corner gradient sliver -->
+  <div
+    class="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-px pointer-events-none"
+    style="background: linear-gradient(90deg, transparent, rgba(167,139,250,0.55), transparent);"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative site-container pt-28 pb-24 sm:pt-36 sm:pb-32">
+    <!-- Status pill -->
     <div
-      class="grid lg:grid-cols-[minmax(0,1fr)_auto] gap-10 lg:gap-16 items-center"
+      class="hero-fade mb-8"
+      style={`--delay: ${baseDelay - 100}ms`}
     >
-      <div class="max-w-3xl">
-        <div class="fade-up mb-6">
-          <StatusPill>
-            Currently shipping a Tuxedo&#8202;&rarr;&#8202;gRPC framework across
-            Three UK and Three Ireland
-          </StatusPill>
-        </div>
+      <span class="status-pill">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span class="text-[var(--fg-muted)]">
+          Currently shipping <span class="text-[var(--fg)] font-semibold">Tuxedo &rarr; gRPC</span> across Three UK &amp; Three Ireland
+        </span>
+      </span>
+    </div>
 
-        <p
-          class="fade-up text-xs sm:text-sm text-[var(--fg-subtle)] uppercase tracking-[0.2em] font-medium mb-4"
-        >
-          Software Developer &middot; Amdocs &middot; Gurgaon, India
-        </p>
+    <!-- Eyebrow -->
+    <p
+      class="hero-fade eyebrow mb-7"
+      style={`--delay: ${baseDelay - 40}ms`}
+    >
+      Software Developer <span class="text-[var(--fg-faint)]">/</span> Amdocs <span class="text-[var(--fg-faint)]">/</span> Gurgaon, India
+    </p>
 
-        <h1 class="fade-up display-1 mb-6">
-          Hi, I&rsquo;m <span class="gradient-text">Ashutosh Modi</span>.
-          <br class="hidden sm:block" />
-          I build platform infrastructure for Tier-1 telecom carriers.
-        </h1>
+    <!-- Display headline -->
+    <h1 id="hero-heading" class="display-1 max-w-[15ch] sm:max-w-[18ch] mb-2">
+      <span class="hero-line">
+        {headlineLine1.map((word, i) => (
+          <span style={`--delay: ${baseDelay + i * wordStep}ms`}>
+            {i < 2 ? <em class="font-light text-[var(--fg-muted)]">{word}</em> : word}
+            {i < headlineLine1.length - 1 && " "}
+          </span>
+        ))}
+      </span>
+      <span class="hero-line gradient-text mt-1">
+        {headlineLine2.map((word, i) => (
+          <span style={`--delay: ${line2Start + i * wordStep}ms`}>
+            {word}
+            {i < headlineLine2.length - 1 && " "}
+          </span>
+        ))}
+      </span>
+    </h1>
 
-        <p
-          class="fade-up-delay-1 text-lg sm:text-xl text-[var(--fg-muted)] leading-relaxed mb-8 max-w-2xl"
-        >
-          A Tuxedo&#8202;&rarr;&#8202;gRPC migration framework rolling out
-          across CK Hutchison&rsquo;s Three UK and Three Ireland. An AI
-          knowledge engine over an 18M-line legacy backend. Parser-driven
-          tooling that turns runtime defects into compile-time errors.
-        </p>
+    <!-- Sub-headline -->
+    <p
+      class="hero-fade text-lg sm:text-xl text-[var(--fg-muted)] leading-relaxed max-w-2xl mt-10"
+      style={`--delay: ${line2Start + headlineLine2.length * wordStep + 200}ms`}
+    >
+      A Tuxedo &rarr; gRPC migration framework rolling out across CK
+      Hutchison&rsquo;s Three UK and Three Ireland. An AI knowledge engine over
+      an 18M-line legacy backend. Compiler-driven tooling that turns runtime
+      defects into compile-time errors.
+    </p>
 
-        <div class="fade-up-delay-2 flex flex-wrap items-center gap-3 mb-10">
-          <a href="/resume.pdf" class="btn-cta btn-cta-primary">
-            <svg
-              aria-hidden="true"
-              class="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 3v12" />
-              <path d="m6 9 6 6 6-6" />
-              <path d="M5 21h14" />
-            </svg>
-            Get my resume
-          </a>
-          <a href="#case-studies" class="btn-cta btn-cta-secondary">
-            See my work
-            <svg
-              aria-hidden="true"
-              class="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M5 12h14" />
-              <path d="m13 5 7 7-7 7" />
-            </svg>
-          </a>
-          <a
-            href="https://www.linkedin.com/in/ashutosh94g/"
-            target="_blank"
-            rel="noopener"
-            class="btn-cta btn-cta-secondary"
-            aria-label="LinkedIn"
-          >
-            <svg
-              aria-hidden="true"
-              class="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path
-                d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.72C24 .77 23.21 0 22.23 0z"
-              />
-            </svg>
-            LinkedIn
-          </a>
-          <a
-            href="https://github.com/ashutosh94g"
-            target="_blank"
-            rel="noopener"
-            class="btn-cta btn-cta-secondary"
-            aria-label="GitHub"
-          >
-            <svg
-              aria-hidden="true"
-              class="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path
-                d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.97c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.27-1.69-1.27-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.76 2.69 1.25 3.34.96.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.27-5.24-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.18a10.86 10.86 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.58.23 2.75.11 3.04.74.8 1.18 1.82 1.18 3.07 0 4.4-2.69 5.36-5.25 5.65.41.36.78 1.05.78 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"
-              />
-            </svg>
-            GitHub
-          </a>
-        </div>
-
-        <p class="fade-up-delay-2 text-sm text-[var(--fg-subtle)]">
-          <a
-            href="mailto:ashutosh94g@gmail.com"
-            class="text-[var(--fg-muted)] hover:text-[var(--fg)]"
-            >ashutosh94g@gmail.com</a
-          >
-          &nbsp;·&nbsp; Open to senior backend &amp; platform roles · India / EU
-          / remote
-        </p>
-      </div>
-
-      <div
-        class="fade-up-delay-3 hidden md:flex justify-center items-center"
+    <!-- CTAs -->
+    <div
+      class="hero-fade flex flex-wrap items-center gap-3 mt-10"
+      style={`--delay: ${line2Start + headlineLine2.length * wordStep + 360}ms`}
+    >
+      <a
+        href="#projects"
+        class="btn-cta btn-cta-primary magnetic-strong"
+        data-scroll-target
       >
-        <Avatar size={240} />
-      </div>
+        See selected work
+        <svg
+          aria-hidden="true"
+          class="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 12h14" />
+          <path d="m13 5 7 7-7 7" />
+        </svg>
+      </a>
+      <a
+        href="/resume.pdf"
+        class="btn-cta btn-cta-secondary magnetic"
+        target="_blank"
+        rel="noopener"
+      >
+        <svg
+          aria-hidden="true"
+          class="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 3v12" />
+          <path d="m6 9 6 6 6-6" />
+          <path d="M5 21h14" />
+        </svg>
+        Resume PDF
+      </a>
+      <a
+        href="https://www.linkedin.com/in/ashutosh94g/"
+        target="_blank"
+        rel="noopener"
+        class="btn-cta btn-cta-secondary magnetic"
+        aria-label="LinkedIn"
+      >
+        <svg
+          aria-hidden="true"
+          class="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path
+            d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.72C24 .77 23.21 0 22.23 0z"
+          />
+        </svg>
+        LinkedIn
+      </a>
+      <a
+        href="https://github.com/ashutosh94g"
+        target="_blank"
+        rel="noopener"
+        class="btn-cta btn-cta-secondary magnetic"
+        aria-label="GitHub"
+      >
+        <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.97c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.27-1.69-1.27-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.76 2.69 1.25 3.34.96.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.27-5.24-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.18a10.86 10.86 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.58.23 2.75.11 3.04.74.8 1.18 1.82 1.18 3.07 0 4.4-2.69 5.36-5.25 5.65.41.36.78 1.05.78 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"
+          />
+        </svg>
+        GitHub
+      </a>
     </div>
 
-    <!-- Bigger, more colorful KPI strip -->
-    <div
-      class="fade-up-delay-3 mt-14 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+    <!-- Quiet contact line -->
+    <p
+      class="hero-fade text-sm text-[var(--fg-faint)] mt-7"
+      style={`--delay: ${line2Start + headlineLine2.length * wordStep + 480}ms`}
     >
-      {
-        stats.map((s, i) => (
-          <div
-            class={
-              'relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)]/85 backdrop-blur-sm px-5 py-5 sm:px-6 sm:py-6 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)] ' +
-              (i === 0
-                ? 'shadow-glow-indigo'
-                : i === 1
-                  ? 'shadow-glow-amber'
-                  : i === 2
-                    ? 'shadow-glow-pink'
-                    : 'shadow-glow-emerald')
-            }
-            style={
-              i === 0
-                ? '--accent-from:#6366f1; --accent-to:#8b5cf6;'
-                : i === 1
-                  ? '--accent-from:#f59e0b; --accent-to:#f97316;'
-                  : i === 2
-                    ? '--accent-from:#ec4899; --accent-to:#a855f7;'
-                    : '--accent-from:#10b981; --accent-to:#14b8a6;'
-            }
-          >
-            <span
-              class="absolute top-0 left-0 right-0 h-[3px] accent-stripe"
-              aria-hidden="true"
-            />
-            <div class="kpi-number mb-1">{s.value}</div>
-            <div class="text-sm font-medium text-[var(--fg)] mb-0.5">{s.label}</div>
-            <div class="text-xs text-[var(--fg-subtle)]">{s.caption}</div>
-          </div>
-        ))
-      }
+      <a
+        href="mailto:ashutosh94g@gmail.com"
+        class="text-[var(--fg-muted)] hover:text-[var(--fg)] no-underline"
+      >ashutosh94g@gmail.com</a>
+      &nbsp;<span class="text-[var(--fg-faint)]">&middot;</span>&nbsp; Open to senior backend &amp; platform roles &nbsp;<span class="text-[var(--fg-faint)]">&middot;</span>&nbsp; India / EU / Remote
+    </p>
+
+    <!-- KPI strip -->
+    <div
+      class="hero-fade mt-20 grid grid-cols-2 lg:grid-cols-4 gap-3"
+      style={`--delay: ${line2Start + headlineLine2.length * wordStep + 620}ms`}
+    >
+      {stats.map((s) => (
+        <div class="rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.015)] backdrop-blur-sm px-5 py-5 transition-all hover:border-[var(--border-strong)] hover:-translate-y-0.5">
+          <div class="kpi-number mb-1">{s.value}</div>
+          <div class="text-sm font-medium text-[var(--fg)] mb-0.5">{s.label}</div>
+          <div class="text-xs text-[var(--fg-faint)] font-mono">{s.caption}</div>
+        </div>
+      ))}
     </div>
+  </div>
+
+  <!-- Scroll cue -->
+  <div
+    class="hero-fade absolute bottom-6 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 text-[var(--fg-faint)]"
+    style={`--delay: ${line2Start + headlineLine2.length * wordStep + 800}ms`}
+    aria-hidden="true"
+  >
+    <span class="text-[10px] font-mono uppercase tracking-[0.3em]">Scroll</span>
+    <span class="scroll-cue"></span>
   </div>
 </section>
 
 <style>
-  .shadow-glow-indigo  { box-shadow: var(--shadow-glow-indigo); }
-  .shadow-glow-amber   { box-shadow: var(--shadow-glow-amber); }
-  .shadow-glow-emerald { box-shadow: var(--shadow-glow-emerald); }
-  .shadow-glow-pink    { box-shadow: var(--shadow-glow-pink); }
+  .hero {
+    /* True-black canvas with the aurora layered above */
+    background:
+      radial-gradient(900px 500px at 100% 0%, rgba(99, 102, 241, 0.06), transparent 60%),
+      var(--bg);
+    min-height: clamp(720px, 92vh, 980px);
+  }
+
+  /* The serif italic at large sizes — synthetic italic from variable font */
+  h1 em {
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  /* Scroll cue: a tiny vertical capsule with a falling dot */
+  .scroll-cue {
+    width: 18px;
+    height: 28px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    position: relative;
+    opacity: 0.6;
+  }
+
+  .scroll-cue::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    width: 2px;
+    height: 6px;
+    border-radius: 2px;
+    background: currentColor;
+    transform: translateX(-50%);
+    animation: scroll-cue-fall 1.8s ease-in-out infinite;
+  }
+
+  @keyframes scroll-cue-fall {
+    0%   { transform: translate(-50%, 0);   opacity: 1; }
+    70%  { transform: translate(-50%, 10px); opacity: 0; }
+    100% { transform: translate(-50%, 10px); opacity: 0; }
+  }
 </style>
