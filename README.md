@@ -1,6 +1,6 @@
-# ashutosh94g.github.io
+# ashutoshmodi.in
 
-Source for [ashutosh94g.github.io](https://ashutosh94g.github.io/) — Ashutosh Modi's portfolio and case studies.
+Source for [ashutoshmodi.in](https://ashutoshmodi.in/) — Ashutosh Modi's portfolio and case studies.
 
 Built with [Astro](https://astro.build/) + MDX + Tailwind CSS, deployed to GitHub Pages via Actions.
 
@@ -70,7 +70,7 @@ The list page at `/writing/` will render it automatically. `draft: true` exclude
 
 ## Sync the resume PDF
 
-The portfolio serves `/resume.pdf` straight from the repo. To keep it in sync with the latest compile from `c:\Users\modia\Resume\resume.pdf`:
+The portfolio serves `/resume.pdf` straight from the repo. To keep it in sync with the latest compile from `c:\Users\modia\AshutoshModiResume\Resume\resume.pdf`:
 
 ```bash
 npm run resume:sync
@@ -105,7 +105,7 @@ Pushing to `main` triggers [`.github/workflows/deploy.yml`](./.github/workflows/
 5. `actions/upload-pages-artifact@v3` from `dist/`
 6. `actions/deploy-pages@v4`
 
-GitHub Pages source is set to **GitHub Actions** (not the legacy branch build). The site URL in [`astro.config.mjs`](./astro.config.mjs) is `https://ashutosh94g.github.io` — update it (and add `public/CNAME`) if a custom domain is wired in.
+GitHub Pages source is set to **GitHub Actions** (not the legacy branch build). The primary site URL in [`astro.config.mjs`](./astro.config.mjs) is `https://ashutoshmodi.in`, and [`public/CNAME`](./public/CNAME) keeps GitHub Pages wired to the custom domain.
 
 ## Project layout
 
@@ -144,7 +144,7 @@ website/
 
 ## Deferred follow-ups
 
-- **Custom domain** — drop `public/CNAME` with the chosen domain (e.g. `ashutoshmodi.dev`) and update `site` in `astro.config.mjs`. HTTPS auto-provisions.
+- **Custom domain** — `ashutoshmodi.in` is wired through `public/CNAME`; keep DNS pointed at GitHub Pages and let HTTPS auto-provision.
 - **Analytics** — Plausible / Cloudflare Web Analytics / GoatCounter all work as a single `<script>` in `BaseLayout.astro`. None are wired up yet.
 - **Blog content** — `/writing/` is structurally ready; just drop MDX files into `src/content/writing/`.
 - **RSS feed** — easy to add via `@astrojs/rss` once `/writing/` has posts.

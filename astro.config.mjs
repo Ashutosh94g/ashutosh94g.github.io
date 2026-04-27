@@ -7,7 +7,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ashutosh94g.github.io',
+  site: 'https://ashutoshmodi.in',
   trailingSlash: 'always',
   prefetch: {
     prefetchAll: true,

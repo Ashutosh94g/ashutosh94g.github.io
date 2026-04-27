@@ -17,7 +17,7 @@ const repoRoot = resolve(__dirname, '..');
 
 const DEFAULT_SRC =
   process.platform === 'win32'
-    ? 'C:\\Users\\modia\\Resume\\resume.pdf'
+    ? 'C:\\Users\\modia\\AshutoshModiResume\\Resume\\resume.pdf'
     : `${process.env.HOME ?? ''}/Resume/resume.pdf`;
 
 const src = process.env.RESUME_SRC ?? DEFAULT_SRC;
